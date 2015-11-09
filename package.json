@@ -1,0 +1,20 @@
+{
+  "name": "deploy-droid",
+  "version": "1.0.0",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "compile": "babel src --out-dir dist --source-maps",
+    "test": "eslint src",
+    "start": "npm test && npm run compile && node dist/main.js"
+  },
+  "engines": {
+    "node": "4.x.x"
+  },
+  "dependencies": {
+    "babel": "^5.8.23",
+    "babel-eslint": "^4.1.3",
+    "eslint": "^1.3.1",
+    "bunyan": "^1.5.1"
+  }
+}
