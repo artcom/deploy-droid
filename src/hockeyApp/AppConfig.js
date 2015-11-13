@@ -31,13 +31,11 @@ export default class AppConfig {
     this.shortversion = latestAvailableVersion.shortversion
     this.latestVersion = latestAvailableVersion.version
     this.downloadUrl = latestAvailableVersion.download_url
-    log.info({result}, "versions")
     return this
   }
 
   getLatestAvailableVersion(appVersions) {
     const deployableVersions = _.select(appVersions, {status: 2})
-    log.info({deployableVersions}, "deployableVersions")
     return deployableVersions[0]
   }
 }

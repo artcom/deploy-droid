@@ -4,7 +4,7 @@ import bunyan from "bunyan"
 
 import AppConfig from "./AppConfig"
 import {options} from "./../setup"
-const log = bunyan.createLogger({ name: "deploy-droid" })
+const log = bunyan.createLogger({ name: "hockey-app" })
 
 const hockeyAppToken = options.hockeyAppToken
 
