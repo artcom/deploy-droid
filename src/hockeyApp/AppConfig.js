@@ -12,7 +12,7 @@ export default class AppConfig {
     this.publicIdentifier = hockeyApp.public_identifier
     this.shortversion = null
     this.latestVersion = null
-    this.downloadUrl = null
+    this.buildUrl = null
   }
 
   retrieveVersion(hockeyAppToken) {
@@ -20,6 +20,9 @@ export default class AppConfig {
     return axios.get(url, {
       headers: {
         "X-HockeyAppToken": hockeyAppToken
+      },
+      params: {
+        include_build_urls: true
       }
     }).then((result) => {
       return this.setLatestVersion(result)
@@ -30,7 +33,8 @@ export default class AppConfig {
     const latestAvailableVersion = this.getLatestAvailableVersion(result.data.app_versions)
     this.shortversion = latestAvailableVersion.shortversion
     this.latestVersion = latestAvailableVersion.version
-    this.downloadUrl = latestAvailableVersion.download_url
+    this.buildUrl = latestAvailableVersion.build_url
+    log.info({latestAvailableVersion}, "latestAvailableVersion")
     return this
   }
 
