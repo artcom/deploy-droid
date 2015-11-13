@@ -3,10 +3,10 @@ import axios from "axios"
 import bunyan from "bunyan"
 
 import AppConfig from "./AppConfig"
-import {getHockeyAppToken} from "./setup"
+import {options} from "./../setup"
 const log = bunyan.createLogger({ name: "deploy-droid" })
 
-const hockeyAppToken = getHockeyAppToken()
+const hockeyAppToken = options.hockeyAppToken
 
 export default class HockeyApp {
 

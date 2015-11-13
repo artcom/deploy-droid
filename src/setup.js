@@ -9,7 +9,7 @@ const cli = commandLineArgs([
   }
 ])
 
-const options = cli.parse()
+export const options = cli.parse()
 
 export function verifyOptions() {
   if (!options.hockeyAppToken) {
@@ -17,8 +17,4 @@ export function verifyOptions() {
     console.log(cli.getUsage())
     process.exit(0)
   }
-}
-
-export function getHockeyAppToken() {
-  return options.hockeyAppToken
 }

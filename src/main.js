@@ -1,6 +1,6 @@
 import bunyan from "bunyan"
 import {verifyOptions} from "./setup"
-import HockeyApp from "./HockeyApp"
+import HockeyApp from "./hockeyApp/HockeyApp"
 
 verifyOptions()
 
