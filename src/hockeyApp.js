@@ -6,6 +6,8 @@ import AppConfig from "./AppConfig"
 import {getHockeyAppToken} from "./setup"
 const log = bunyan.createLogger({ name: "deploy-droid" })
 
+const hockeyAppToken = getHockeyAppToken()
+
 export function getApps() {
   return retrieveAll()
     .then(selectDeployableApps)
@@ -15,7 +17,7 @@ export function getApps() {
 function retrieveAll() {
   return axios.get("https://rink.hockeyapp.net/api/2/apps", {
     headers: {
-      "X-HockeyAppToken": getHockeyAppToken()
+      "X-HockeyAppToken": hockeyAppToken
     }
   })
 }
@@ -32,6 +34,8 @@ function selectDeployableApps(response) {
 function createAppConfigs(hockeyData) {
   const appConfigs = _.map(hockeyData, (hockeyApp) => new AppConfig(hockeyApp))
 
-  const completeAppConfigs = _.map(appConfigs, (appConfig) => appConfig.retrieveVersion())
+  const completeAppConfigs = _.map(appConfigs,
+    (appConfig) => appConfig.retrieveVersion(hockeyAppToken)
+  )
   return Promise.all(completeAppConfigs)
 }

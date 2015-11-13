@@ -2,8 +2,6 @@ import _ from "lodash"
 import axios from "axios"
 import bunyan from "bunyan"
 
-import {getHockeyAppToken} from "./setup"
-
 const log = bunyan.createLogger({ name: "deploy-droid" })
 
 export default class AppConfig {
@@ -17,11 +15,11 @@ export default class AppConfig {
     this.downloadUrl = null
   }
 
-  retrieveVersion() {
+  retrieveVersion(hockeyAppToken) {
     const url = `https://rink.hockeyapp.net/api/2/apps/${this.publicIdentifier}/app_versions`
     return axios.get(url, {
       headers: {
-        "X-HockeyAppToken": getHockeyAppToken()
+        "X-HockeyAppToken": hockeyAppToken
       }
     }).then((result) => {
       return this.setLatestVersion(result)
