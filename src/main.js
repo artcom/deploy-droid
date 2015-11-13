@@ -1,13 +1,14 @@
 import bunyan from "bunyan"
 import {verifyOptions} from "./setup"
-import {getApps} from "./hockeyApp"
+import HockeyApp from "./HockeyApp"
 
 verifyOptions()
 
 const log = bunyan.createLogger({ name: "deploy-droid" })
 log.info("Starting Deploy Droid")
 
-getApps().then((appConfigs) => {
+const hockeyApp = new HockeyApp()
+hockeyApp.getApps().then((appConfigs) => {
   log.info({appConfigs}, "App configs")
   return appConfigs
 }).catch((error) => {

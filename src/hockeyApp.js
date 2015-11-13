@@ -8,34 +8,38 @@ const log = bunyan.createLogger({ name: "deploy-droid" })
 
 const hockeyAppToken = getHockeyAppToken()
 
-export function getApps() {
-  return retrieveAll()
-    .then(selectDeployableApps)
-    .then(createAppConfigs)
-}
+export default class HockeyApp {
 
-function retrieveAll() {
-  return axios.get("https://rink.hockeyapp.net/api/2/apps", {
-    headers: {
-      "X-HockeyAppToken": hockeyAppToken
-    }
-  })
-}
+  getApps() {
+    return this.retrieveAll()
+      .then(this.selectDeployableApps)
+      .then(this.createAppConfigs)
+  }
 
-function selectDeployableApps(response) {
-  const deployableApps = _.select(response.data.apps, {
-    custom_release_type: "deploydroid",
-    status: 2
-  })
-  log.info({deployableApps}, "Deployable apps")
-  return deployableApps
-}
+  retrieveAll() {
+    return axios.get("https://rink.hockeyapp.net/api/2/apps", {
+      headers: {
+        "X-HockeyAppToken": hockeyAppToken
+      }
+    })
+  }
 
-function createAppConfigs(hockeyData) {
-  const appConfigs = _.map(hockeyData, (hockeyApp) => new AppConfig(hockeyApp))
+  selectDeployableApps(response) {
+    const deployableApps = _.select(response.data.apps, {
+      custom_release_type: "deploydroid",
+      status: 2
+    })
+    log.info({deployableApps}, "Deployable apps")
+    return deployableApps
+  }
 
-  const completeAppConfigs = _.map(appConfigs,
-    (appConfig) => appConfig.retrieveVersion(hockeyAppToken)
-  )
-  return Promise.all(completeAppConfigs)
+  createAppConfigs(hockeyData) {
+    const appConfigs = _.map(hockeyData, (hockeyApp) => new AppConfig(hockeyApp))
+
+    const completeAppConfigs = _.map(appConfigs,
+      (appConfig) => appConfig.retrieveVersion(hockeyAppToken)
+    )
+    return Promise.all(completeAppConfigs)
+  }
+
 }
