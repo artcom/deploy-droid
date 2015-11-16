@@ -14,11 +14,11 @@ export default class Device {
   }
 
   createInstallActions(appConfigs) {
-    const isInstalledPromises = _.map(appConfigs, (appConfig) => {
-      return this.isInstalled(this.id, appConfig)
+    const actionPromises = _.map(appConfigs, (appConfig) => {
+      return this.isInstalled(appConfig)
     })
 
-    Promise.all(isInstalledPromises).then((results) => {
+    Promise.all(actionPromises).then((results) => {
       log.info({results}, "results of is installed")
       log.info({actions: this.actions.install}, "install actions")
     }).catch((error) => {
@@ -26,19 +26,23 @@ export default class Device {
     })
   }
 
-  isInstalled(deviceId, appConfig) {
-    return adb.isInstalled(deviceId, appConfig.bundleIdentifier).then((isInstalled) => {
-      if (!isInstalled) {
-        this.actions.install.push(appConfig)
-        return this
-      } else {
-        return this.getInstalledVersion(deviceId, appConfig.bundleIdentifier).then((installedVersion) => {
-          if (parseInt(installedVersion) < parseInt(appConfig.latestVersion)) {
-            this.actions.install.push(appConfig)
-            return this
-          }
-        })
-      }
+  createAction(appConfig, isInstalled) {
+    if (!isInstalled) {
+      this.actions.install.push(appConfig)
+      return this
+    } else {
+      return this.getInstalledVersion(this.id, appConfig.bundleIdentifier).then((installedVersion) => {
+        if (parseInt(installedVersion) < parseInt(appConfig.latestVersion)) {
+          this.actions.install.push(appConfig)
+          return this
+        }
+      })
+    }
+  }
+
+  isInstalled(appConfig) {
+    return adb.isInstalled(this.id, appConfig.bundleIdentifier).then((isInstalled) => {
+      return this.createAction(appConfig, isInstalled)
     })
   }
 
