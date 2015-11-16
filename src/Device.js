@@ -15,16 +15,16 @@ export default class Device {
     this.actions = null
   }
 
+  executeActions() {
+    this.actions.forEach((action) => action.execute(this.id))
+  }
+
   createInstallActions(appConfigs) {
     const actionPromises = _.map(appConfigs, (appConfig) => {
       return this.createAction(appConfig)
     })
 
     return Promise.all(actionPromises).then((results) => {
-      log.info({results}, "results of action promises")
-      results.forEach((result) => {
-        result.execute(this.id)
-      })
       this.actions = results
       return this
     }).catch((error) => {
@@ -70,7 +70,4 @@ export default class Device {
       })
   }
 
-  addInstallAction(appConfig) {
-    this.actions.install.push(appConfig)
-  }
 }

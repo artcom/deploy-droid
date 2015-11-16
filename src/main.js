@@ -31,6 +31,10 @@ Promise.all(preconditions).then((results) => {
   })
   Promise.all(deviceActions).then((results) => {
     log.info({results}, "Devices with actions")
+
+    results.forEach((result) => {
+      result.executeActions()
+    })
   })
 
 }).catch((error) => {
