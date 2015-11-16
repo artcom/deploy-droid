@@ -17,8 +17,6 @@ const hockeyApp = new HockeyApp()
 function getDevices() {
   return adb.listDevices().then((devices) => {
     return _.map(devices, (device) => new Device(device.id, device.type))
-  }).catch(() => {
-    return {hans: "wurst"}
   })
 }
 

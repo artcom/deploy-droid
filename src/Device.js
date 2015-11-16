@@ -2,6 +2,8 @@ import _ from "lodash"
 import bunyan from "bunyan"
 import adbkit from "adbkit"
 
+import Action from "./Action"
+
 const log = bunyan.createLogger({ name: "deploy-droid" })
 const adb = adbkit.createClient()
 
@@ -15,36 +17,40 @@ export default class Device {
 
   createInstallActions(appConfigs) {
     const actionPromises = _.map(appConfigs, (appConfig) => {
-      return this.isInstalled(appConfig)
+      return this.createAction(appConfig)
     })
 
     Promise.all(actionPromises).then((results) => {
-      log.info({results}, "results of is installed")
-      log.info({actions: this.actions.install}, "install actions")
+      log.info({results}, "results of action promises")
     }).catch((error) => {
       log.info({error}, "Error")
     })
   }
 
-  createAction(appConfig, isInstalled) {
-    if (!isInstalled) {
-      this.actions.install.push(appConfig)
-      return this
+  createAction(appConfig) {
+    return adb.isInstalled(this.id, appConfig.bundleIdentifier).then((isInstalled) => {
+      return this.onIsInstalled(appConfig, isInstalled)
+    })
+  }
+
+  onIsInstalled(appConfig, isInstalled) {
+    if (isInstalled) {
+      return this.checkForUpdateAction(appConfig)
     } else {
-      return this.getInstalledVersion(this.id, appConfig.bundleIdentifier).then((installedVersion) => {
-        if (parseInt(installedVersion) < parseInt(appConfig.latestVersion)) {
-          this.actions.install.push(appConfig)
-          return this
-        }
-      })
+      return new Action(appConfig)
     }
   }
 
-  isInstalled(appConfig) {
-    return adb.isInstalled(this.id, appConfig.bundleIdentifier).then((isInstalled) => {
-      return this.createAction(appConfig, isInstalled)
-    })
-  }
+  checkForUpdateAction(appConfig) {
+    return this.getInstalledVersion(this.id, appConfig.bundleIdentifier)
+      .then((installedVersion) => {
+        if (parseInt(installedVersion) < parseInt(appConfig.version)) {
+          return new Action(appConfig)
+        }
+
+        return new Action(null)
+      }
+  )}
 
   getInstalledVersion(deviceId, androidPackage) {
     const regex = new RegExp("versionCode=\\d+")
@@ -52,7 +58,6 @@ export default class Device {
       .then(adbkit.util.readAll)
       .then(function(output) {
         const version = regex.exec(output.toString())[0].replace("versionCode=", "")
-        log.info({deviceId, androidPackage, version}, "ADB out")
         return version
       })
       .catch((error) => {
@@ -60,4 +65,7 @@ export default class Device {
       })
   }
 
+  addInstallAction(appConfig) {
+    this.actions.install.push(appConfig)
+  }
 }

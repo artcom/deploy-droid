@@ -11,7 +11,7 @@ export default class AppConfig {
     this.bundleIdentifier = hockeyApp.bundle_identifier
     this.publicIdentifier = hockeyApp.public_identifier
     this.shortversion = null
-    this.latestVersion = null
+    this.version = null
     this.buildUrl = null
   }
 
@@ -25,17 +25,16 @@ export default class AppConfig {
         include_build_urls: true
       }
     }).then((result) => {
-      return this.setLatestVersion(result)
+      return this.setVersion(result)
     })
   }
 
-  setLatestVersion(result) {
+  setVersion(result) {
     const latestAvailableVersion = this.getLatestAvailableVersion(result.data.app_versions)
     this.shortversion = latestAvailableVersion.shortversion
-    this.latestVersion = latestAvailableVersion.version
+    this.version = latestAvailableVersion.version
     this.buildUrl = latestAvailableVersion.build_url
 
-    //log.info({latestAvailableVersion}, "latestAvailableVersion")
     return this
   }
 
