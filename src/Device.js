@@ -2,7 +2,7 @@ import _ from "lodash"
 import bunyan from "bunyan"
 import adbkit from "adbkit"
 
-import Action from "./Action"
+import {InstallAction, UpdateAction, AlreadyInstalledAction} from "./Action"
 
 const log = bunyan.createLogger({ name: "deploy-droid" })
 const adb = adbkit.createClient()
@@ -12,7 +12,7 @@ export default class Device {
   constructor(id, type) {
     this.id = id
     this.type = type
-    this.actions = {install: []}
+    this.actions = null
   }
 
   createInstallActions(appConfigs) {
@@ -20,8 +20,13 @@ export default class Device {
       return this.createAction(appConfig)
     })
 
-    Promise.all(actionPromises).then((results) => {
+    return Promise.all(actionPromises).then((results) => {
       log.info({results}, "results of action promises")
+      results.forEach((result) => {
+        result.execute(this.id)
+      })
+      this.actions = results
+      return this
     }).catch((error) => {
       log.info({error}, "Error")
     })
@@ -37,7 +42,7 @@ export default class Device {
     if (isInstalled) {
       return this.checkForUpdateAction(appConfig)
     } else {
-      return new Action(appConfig)
+      return new InstallAction(appConfig)
     }
   }
 
@@ -45,10 +50,10 @@ export default class Device {
     return this.getInstalledVersion(this.id, appConfig.bundleIdentifier)
       .then((installedVersion) => {
         if (parseInt(installedVersion) < parseInt(appConfig.version)) {
-          return new Action(appConfig)
+          return new UpdateAction(appConfig, installedVersion)
         }
 
-        return new Action(null)
+        return new AlreadyInstalledAction(appConfig)
       }
   )}
 

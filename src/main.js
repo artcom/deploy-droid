@@ -26,11 +26,13 @@ Promise.all(preconditions).then((results) => {
   const devices = results[1]
 
   //go over every device, collect promises that find out if AppConfigs are deployed
-  _.map(devices, (device) => {
-    device.createInstallActions(appConfigs)
+  const deviceActions = _.map(devices, (device) => {
+    return device.createInstallActions(appConfigs)
+  })
+  Promise.all(deviceActions).then((results) => {
+    log.info({results}, "Devices with actions")
   })
 
-  log.info({results}, "List AppConfigs")
 }).catch((error) => {
   log.error({error}, "Error")
 })
