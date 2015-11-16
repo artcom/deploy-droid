@@ -34,7 +34,8 @@ export default class AppConfig {
     this.shortversion = latestAvailableVersion.shortversion
     this.latestVersion = latestAvailableVersion.version
     this.buildUrl = latestAvailableVersion.build_url
-    log.info({latestAvailableVersion}, "latestAvailableVersion")
+
+    //log.info({latestAvailableVersion}, "latestAvailableVersion")
     return this
   }
 
