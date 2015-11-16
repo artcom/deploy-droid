@@ -1,7 +1,6 @@
 import _ from "lodash"
 import bunyan from "bunyan"
 import adbkit from "adbkit"
-import AppConfig from "./hockeyApp/AppConfig"
 
 const log = bunyan.createLogger({ name: "deploy-droid" })
 const adb = adbkit.createClient()
@@ -11,16 +10,36 @@ export default class Device {
   constructor(id, type) {
     this.id = id
     this.type = type
+    this.actions = {install: []}
   }
 
-  checkDeployments(appConfigs) {
-    return _.map(appConfigs, (appConfig) => {
-      return this.isInstalled(this.id, appConfig.bundleIdentifier)
+  createInstallActions(appConfigs) {
+    const isInstalledPromises = _.map(appConfigs, (appConfig) => {
+      return this.isInstalled(this.id, appConfig)
+    })
+
+    Promise.all(isInstalledPromises).then((results) => {
+      log.info({results}, "results of is installed")
+      log.info({actions: this.actions.install}, "install actions")
+    }).catch((error) => {
+      log.info({error}, "Error")
     })
   }
 
-  isInstalled(deviceId, androidPackage) {
-    return adb.isInstalled(deviceId, androidPackage)
+  isInstalled(deviceId, appConfig) {
+    return adb.isInstalled(deviceId, appConfig.bundleIdentifier).then((isInstalled) => {
+      if (!isInstalled) {
+        this.actions.install.push(appConfig)
+        return this
+      } else {
+        return this.getInstalledVersion(deviceId, appConfig.bundleIdentifier).then((installedVersion) => {
+          if (parseInt(installedVersion) < parseInt(appConfig.latestVersion)) {
+            this.actions.install.push(appConfig)
+            return this
+          }
+        })
+      }
+    })
   }
 
   getInstalledVersion(deviceId, androidPackage) {

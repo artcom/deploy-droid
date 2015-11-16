@@ -29,7 +29,6 @@ export default class HockeyApp {
       custom_release_type: "deploydroid",
       status: 2
     })
-    log.info({deployableApps}, "Deployable apps")
     return deployableApps
   }
 

@@ -17,6 +17,8 @@ const hockeyApp = new HockeyApp()
 function getDevices() {
   return adb.listDevices().then((devices) => {
     return _.map(devices, (device) => new Device(device.id, device.type))
+  }).catch(() => {
+    return {hans: "wurst"}
   })
 }
 
@@ -27,15 +29,12 @@ Promise.all(preconditions).then((results) => {
 
   //go over every device, collect promises that find out if AppConfigs are deployed
   _.map(devices, (device) => {
-    const isInstalledPromises = device.checkDeployments(appConfigs)
-    Promise.all(isInstalledPromises).then((results) => {
-      log.info({results}, "results of is installed")
-    })
+    device.createInstallActions(appConfigs)
   })
 
-  log.info({devices}, "List adb devices")
+  log.info({results}, "List AppConfigs")
 }).catch((error) => {
-  log.error({error}, "Error retrieving app configs")
+  log.error({error}, "Error")
 })
 
 /*
