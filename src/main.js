@@ -1,22 +1,22 @@
+/* @flow */
+
 import _ from "lodash"
+import util from "util"
 
 import {verifyOptions, log} from "./setup"
-import HockeyApp from "./hockeyApp/HockeyApp"
+import * as hockeyApp from "./hockeyApp/HockeyApp"
 import Device from "./android/Device"
 
 verifyOptions()
-const hockeyApp = new HockeyApp()
 
 Promise.all([hockeyApp.getApps(), Device.createDevices()])
-  .then((results) => {
-    const appConfigs = results[0]
-    const devices = results[1]
-
+  .then(([appConfigs, devices]) => {
     const deployActions = _.map(devices, (device) => {
       return device.createDeployActions(appConfigs)
     })
-    Promise.all(deployActions).then((results) => {
-      log.info({results}, "Devices with actions")
+
+    return Promise.all(deployActions).then((results) => {
+      console.log(util.inspect(results, {depth: -1}))
 
       results.forEach((result) => {
         result.executeActions()

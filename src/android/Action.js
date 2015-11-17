@@ -14,7 +14,11 @@ export class InformAction {
   }
 }
 
-export class InstallAction extends InformAction{
+export class InstallAction{
+  constructor(appConfig) {
+    this.appConfig = appConfig
+  }
+
   execute(device) {
     log.info({
       version: this.appConfig.version,
@@ -24,9 +28,9 @@ export class InstallAction extends InformAction{
   }
 }
 
-export class UpdateAction extends InstallAction {
+export class UpdateAction {
   constructor(appConfig, currentVersion) {
-    super(appConfig)
+    this.appConfig = appConfig
     this.currentVersion = currentVersion
   }
 

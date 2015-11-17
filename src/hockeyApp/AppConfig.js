@@ -1,40 +1,56 @@
+/* @flow */
+
 import _ from "lodash"
 import axios from "axios"
+import type {HockeyAppInfo} from "./HockeyApp"
+import {options} from "./../setup"
+
+export type HockeyAppVersionInfo = {
+  shortversion: string,
+  version: string,
+  build_url: string
+}
 
 export default class AppConfig {
-  constructor(hockeyApp) {
+  /* jscs:disable disallowSemicolons */
+  title: string;
+  bundleIdentifier: string;
+  publicIdentifier: string;
+  shortVersion: string;
+  version: string;
+  buildUrl: string;
+  /* jscs:enable disallowSemicolons */
+
+  constructor(hockeyApp: HockeyAppInfo) {
     this.title = hockeyApp.title
     this.bundleIdentifier = hockeyApp.bundle_identifier
     this.publicIdentifier = hockeyApp.public_identifier
-    this.shortversion = null
-    this.version = null
-    this.buildUrl = null
   }
 
-  retrieveVersion(hockeyAppToken) {
+  retrieveVersion(): Promise<AppConfig> {
     const url = `https://rink.hockeyapp.net/api/2/apps/${this.publicIdentifier}/app_versions`
     return axios.get(url, {
       headers: {
-        "X-HockeyAppToken": hockeyAppToken
+        "X-HockeyAppToken": options.hockeyAppToken
       },
       params: {
         include_build_urls: true
       }
     }).then((result) => {
-      return this.setVersion(result)
+      this.setVersion(result.data.app_versions)
+      return this
     })
   }
 
-  setVersion(result) {
-    const latestAvailableVersion = this.getLatestAvailableVersion(result.data.app_versions)
-    this.shortversion = latestAvailableVersion.shortversion
+  setVersion(appVersions: Array<HockeyAppVersionInfo>) {
+    const latestAvailableVersion = this.getLatestAvailableVersion(appVersions)
+
+    this.shortVersion = latestAvailableVersion.shortversion
     this.version = latestAvailableVersion.version
     this.buildUrl = latestAvailableVersion.build_url
-
-    return this
   }
 
-  getLatestAvailableVersion(appVersions) {
+  getLatestAvailableVersion(appVersions: Array<HockeyAppVersionInfo>): HockeyAppVersionInfo {
     const deployableVersions = _.select(appVersions, {status: 2})
     return deployableVersions[0]
   }

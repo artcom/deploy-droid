@@ -20,33 +20,27 @@ export default class Device {
   }
 
   createDeployActions(appConfigs) {
-    const deployActions = _.map(appConfigs, (appConfig) => {
-      return this.createAction(appConfig)
-    })
+    const deployActions = appConfigs.map(this.createAction.bind(this))
 
-    return Promise.all(deployActions).then((results) => {
-      this.actions = results
-      return this
-    }).catch((error) => {
-      log.info({error}, "Error")
-    })
+    return Promise.all(deployActions)
+      .then((results) => {
+        this.actions = results
+        return this
+      })
   }
 
   createAction(appConfig) {
-    return adb.isInstalled(this.id, appConfig.bundleIdentifier).then((isInstalled) => {
-      return this.onIsInstalled(appConfig, isInstalled)
-    })
+    return adb.isInstalled(this.id, appConfig.bundleIdentifier)
+      .then((isInstalled) => {
+        if (isInstalled) {
+          return this.createActionForInstalledApp(appConfig)
+        } else {
+          return new InstallAction(appConfig)
+        }
+      })
   }
 
-  onIsInstalled(appConfig, isInstalled) {
-    if (isInstalled) {
-      return this.checkForUpdateAction(appConfig)
-    } else {
-      return new InstallAction(appConfig)
-    }
-  }
-
-  checkForUpdateAction(appConfig) {
+  createActionForInstalledApp(appConfig) {
     return this.getInstalledVersion(this.id, appConfig.bundleIdentifier)
       .then((installedVersion) => {
         if (parseInt(installedVersion) < parseInt(appConfig.version)) {
@@ -64,9 +58,6 @@ export default class Device {
       .then(function(output) {
         const version = regex.exec(output.toString())[0].replace("versionCode=", "")
         return version
-      })
-      .catch((error) => {
-        log.info({error}, "ADB error")
       })
   }
 

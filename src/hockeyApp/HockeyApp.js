@@ -1,42 +1,48 @@
+/* @flow */
+
 import _ from "lodash"
 import axios from "axios"
 
 import AppConfig from "./AppConfig"
 import {options} from "./../setup"
 
-const hockeyAppToken = options.hockeyAppToken
+type HockeyAppInfos = Array<HockeyAppInfo>
 
-export default class HockeyApp {
+export type HockeyAppInfo = {
+  custom_release_type: string,
+  status: number,
+  title: string,
+  bundle_identifier: string,
+  public_identifier: string
+}
 
-  getApps() {
-    return this.retrieveAll()
-      .then(this.selectDeployableApps)
-      .then(this.createAppConfigs)
-  }
+const DEPLOYABLE = 2
 
-  retrieveAll() {
-    return axios.get("https://rink.hockeyapp.net/api/2/apps", {
-      headers: {
-        "X-HockeyAppToken": hockeyAppToken
-      }
-    })
-  }
+export function getApps(): Promise<Array<AppConfig>> {
+  return retrieveAll()
+    .then(selectDeployableApps)
+    .then(createAppConfigs)
+}
 
-  selectDeployableApps(response) {
-    const deployableApps = _.select(response.data.apps, {
-      custom_release_type: "deploydroid",
-      status: 2
-    })
-    return deployableApps
-  }
+function retrieveAll(): Promise<HockeyAppInfos> {
+  return axios.get("https://rink.hockeyapp.net/api/2/apps", {
+    headers: {
+      "X-HockeyAppToken": options.hockeyAppToken
+    }
+  }).then((response) => {
+    return response.data.apps
+  })
+}
 
-  createAppConfigs(hockeyData) {
-    const appConfigs = _.map(hockeyData, (hockeyApp) => new AppConfig(hockeyApp))
+function selectDeployableApps(apps: HockeyAppInfos): Array<HockeyAppInfo> {
+  return _.select(apps, {
+    custom_release_type: "deploydroid",
+    status: DEPLOYABLE
+  })
+}
 
-    const completeAppConfigs = _.map(appConfigs,
-      (appConfig) => appConfig.retrieveVersion(hockeyAppToken)
-    )
-    return Promise.all(completeAppConfigs)
-  }
-
+function createAppConfigs(deployableApps: HockeyAppInfos): Promise<Array<AppConfig>> {
+  const appConfigs = deployableApps.map((hockeyApp) => new AppConfig(hockeyApp))
+  const completeAppConfigs = appConfigs.map((appConfig) => appConfig.retrieveVersion())
+  return Promise.all(completeAppConfigs)
 }
