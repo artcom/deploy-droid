@@ -2,7 +2,7 @@ import _ from "lodash"
 import {log} from "./setup"
 import adbkit from "adbkit"
 
-import {InstallAction, UpdateAction, AlreadyInstalledAction} from "./Action"
+import {InformAction, InstallAction, UpdateAction} from "./Action"
 
 const adb = adbkit.createClient()
 
@@ -51,7 +51,7 @@ export default class Device {
           return new UpdateAction(appConfig, installedVersion)
         }
 
-        return new AlreadyInstalledAction(appConfig)
+        return new InformAction(appConfig)
       }
   )}
 

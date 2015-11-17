@@ -1,11 +1,20 @@
 import {log} from "./setup"
 
-export class InstallAction {
-
+export class InformAction {
   constructor(appConfig) {
     this.appConfig = appConfig
   }
 
+  execute(device) {
+    log.info({
+      version: this.appConfig.version,
+      app: this.appConfig.title,
+      device
+    }, "Version already installed on device")
+  }
+}
+
+export class InstallAction extends InformAction{
   execute(device) {
     log.info({
       version: this.appConfig.version,
@@ -28,15 +37,5 @@ export class UpdateAction extends InstallAction {
       app: this.appConfig.title,
       device
     }, "Updating version of device")
-  }
-}
-
-export class AlreadyInstalledAction extends InstallAction {
-  execute(device) {
-    log.info({
-      version: this.appConfig.version,
-      app: this.appConfig.title,
-      device
-    }, "Version already installed on device")
   }
 }
