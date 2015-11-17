@@ -19,10 +19,6 @@ export default class Device {
     })
   }
 
-  executeActions() {
-    this.actions.forEach((action) => action.execute(this.id))
-  }
-
   createDeployActions(appConfigs) {
     const deployActions = _.map(appConfigs, (appConfig) => {
       return this.createAction(appConfig)
@@ -72,5 +68,9 @@ export default class Device {
       .catch((error) => {
         log.info({error}, "ADB error")
       })
+  }
+
+  executeActions() {
+    this.actions.forEach((action) => action.execute(this.id))
   }
 }
