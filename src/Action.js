@@ -9,7 +9,11 @@ export class InstallAction {
   }
 
   execute(device) {
-    log.info({version: this.appConfig.version, device}, "Installing version to device")
+    log.info({
+      version: this.appConfig.version,
+      app: this.appConfig.title,
+      device
+    }, "Installing version to device")
   }
 }
 
@@ -23,6 +27,7 @@ export class UpdateAction extends InstallAction {
     log.info({
       currentVersion: this.currentVersion,
       newVersion: this.appConfig.version,
+      app: this.appConfig.title,
       device
     }, "Updating version of device")
   }
@@ -30,6 +35,10 @@ export class UpdateAction extends InstallAction {
 
 export class AlreadyInstalledAction extends InstallAction {
   execute(device) {
-    log.info({version: this.appConfig.version, device}, "Version already installed on device")
+    log.info({
+      version: this.appConfig.version,
+      app: this.appConfig.title,
+      device
+    }, "Version already installed on device")
   }
 }

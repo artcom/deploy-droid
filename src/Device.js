@@ -19,12 +19,12 @@ export default class Device {
     this.actions.forEach((action) => action.execute(this.id))
   }
 
-  createInstallActions(appConfigs) {
-    const actionPromises = _.map(appConfigs, (appConfig) => {
+  createDeployActions(appConfigs) {
+    const deployActions = _.map(appConfigs, (appConfig) => {
       return this.createAction(appConfig)
     })
 
-    return Promise.all(actionPromises).then((results) => {
+    return Promise.all(deployActions).then((results) => {
       this.actions = results
       return this
     }).catch((error) => {
