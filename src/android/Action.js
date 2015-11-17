@@ -1,4 +1,4 @@
-import {log} from "./setup"
+import {log} from "./../setup"
 
 export class InformAction {
   constructor(appConfig) {

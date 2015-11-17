@@ -1,5 +1,5 @@
 import _ from "lodash"
-import {log} from "./setup"
+import {log} from "./../setup"
 import adbkit from "adbkit"
 
 import {InformAction, InstallAction, UpdateAction} from "./Action"
@@ -11,6 +11,12 @@ export default class Device {
     this.id = id
     this.type = type
     this.actions = null
+  }
+
+  static createDevices() {
+    return adb.listDevices().then((devices) => {
+      return _.map(devices, (device) => new Device(device.id, device.type))
+    })
   }
 
   executeActions() {
