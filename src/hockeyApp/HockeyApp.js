@@ -1,10 +1,8 @@
 import _ from "lodash"
 import axios from "axios"
-import bunyan from "bunyan"
 
 import AppConfig from "./AppConfig"
 import {options} from "./../setup"
-const log = bunyan.createLogger({ name: "hockey-app" })
 
 const hockeyAppToken = options.hockeyAppToken
 

@@ -1,6 +1,4 @@
-import bunyan from "bunyan"
-
-const log = bunyan.createLogger({ name: "deploy-droid" })
+import {log} from "./setup"
 
 export class InstallAction {
 

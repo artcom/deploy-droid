@@ -1,4 +1,7 @@
 import commandLineArgs from "command-line-args"
+import bunyan from "bunyan"
+
+export const log = bunyan.createLogger({ name: "deploy-droid" })
 
 const cli = commandLineArgs([
   {

@@ -1,11 +1,7 @@
 import _ from "lodash"
 import axios from "axios"
-import bunyan from "bunyan"
-
-const log = bunyan.createLogger({ name: "deploy-droid" })
 
 export default class AppConfig {
-
   constructor(hockeyApp) {
     this.title = hockeyApp.title
     this.bundleIdentifier = hockeyApp.bundle_identifier

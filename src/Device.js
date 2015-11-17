@@ -1,14 +1,12 @@
 import _ from "lodash"
-import bunyan from "bunyan"
+import {log} from "./setup"
 import adbkit from "adbkit"
 
 import {InstallAction, UpdateAction, AlreadyInstalledAction} from "./Action"
 
-const log = bunyan.createLogger({ name: "deploy-droid" })
 const adb = adbkit.createClient()
 
 export default class Device {
-
   constructor(id, type) {
     this.id = id
     this.type = type
@@ -69,5 +67,4 @@ export default class Device {
         log.info({error}, "ADB error")
       })
   }
-
 }
