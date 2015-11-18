@@ -12,7 +12,7 @@ import {
   AppConfig
 } from "./types"
 
-export function getApps(): Promise<Array<AppConfig>> {
+export function getAppConfigs(): Promise<Array<AppConfig>> {
   return retrieveAllApps()
     .then(selectDeployableApps)
     .then(createAppConfigs)
@@ -37,10 +37,7 @@ function selectDeployableApps(apps: HockeyAppInfos): Array<HockeyAppInfo> {
 
 function createAppConfigs(deployableApps: HockeyAppInfos): Promise<Array<AppConfig>> {
   const createAppConfigs = deployableApps.map((deployableApp) => createAppConfig(deployableApp))
-  return Promise.all(createAppConfigs).then((results) => {
-    log.info({results}, "AppConfigs")
-    return results
-  })
+  return Promise.all(createAppConfigs)
 }
 
 function createAppConfig(appInfo: HockeyAppInfo): Promise<AppConfig> {

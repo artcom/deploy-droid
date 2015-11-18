@@ -4,13 +4,16 @@ import _ from "lodash"
 import util from "util"
 
 import {verifyOptions, log} from "./setup"
-import * as hockeyApp from "./hockeyApp/HockeyApp"
+import * as hockeyApp from "./hockeyApp/hockeyApp"
 import Device from "./android/Device"
 
 verifyOptions()
 
-Promise.all([hockeyApp.getApps(), Device.createDevices()])
+Promise.all([hockeyApp.getAppConfigs(), Device.createDevices()])
   .then(([appConfigs, devices]) => {
+
+    log.info({appConfigs}, "AppConfigs")
+
     const deployActions = _.map(devices, (device) => {
       return device.createDeployActions(appConfigs)
     })
@@ -26,14 +29,3 @@ Promise.all([hockeyApp.getApps(), Device.createDevices()])
   }).catch((error) => {
     log.error({error}, "Error")
   })
-
-/*
-goal:
-
-device:
-welche app config soll installiert werden
-
-appconfig:
-welche app soll heruntergeladen werden
-
-*/
