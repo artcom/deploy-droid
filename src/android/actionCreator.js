@@ -6,18 +6,16 @@ import adbkit from "adbkit"
 import {InformAction, InstallAction, UpdateAction} from "./Action"
 import {AppConfig} from "./../hockeyApp/types"
 
+type Device = {
+  id: string,
+  type: string
+}
+
 const adb = adbkit.createClient()
 
-export function createDeployActions(appConfigs: Array<AppConfig>): any {
-
-  adb.listDevices().then((devices) => {
-    const device = devices[0]
-    const deployActions = appConfigs.map((appConfig) => createAction(device, appConfig))
-    return Promise.all(deployActions)
-      .then((results) => {
-        log.info({results, device}, "action for device")
-      })
-  })
+export function createDeployActions(device: Device, appConfigs: Array<AppConfig>): any {
+  const deployActions = appConfigs.map((appConfig) => createAction(device, appConfig))
+  return Promise.all(deployActions)
 }
 
 function createAction(device, appConfig) {
@@ -26,7 +24,7 @@ function createAction(device, appConfig) {
       if (isInstalled) {
         return createActionForInstalledApp(device, appConfig)
       } else {
-        return new InstallAction(appConfig)
+        return new InstallAction(device, appConfig)
       }
     })
 }
@@ -35,10 +33,10 @@ function createActionForInstalledApp(device, appConfig) {
   return getInstalledVersion(device.id, appConfig.bundleIdentifier)
     .then((installedVersion) => {
       if (parseInt(installedVersion) < parseInt(appConfig.version)) {
-        return new UpdateAction(appConfig, installedVersion)
+        return new UpdateAction(device, appConfig, installedVersion)
       }
 
-      return new InformAction(appConfig)
+      return new InformAction(device, appConfig)
     }
 )}
 
