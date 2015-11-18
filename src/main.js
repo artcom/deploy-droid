@@ -5,27 +5,16 @@ import util from "util"
 
 import {verifyOptions, log} from "./setup"
 import * as hockeyApp from "./hockeyApp/hockeyApp"
-import Device from "./android/Device"
+import * as actionCreator from "./android/actionCreator"
 
 verifyOptions()
 
-Promise.all([hockeyApp.getAppConfigs(), Device.createDevices()])
-  .then(([appConfigs, devices]) => {
-
+hockeyApp.getAppConfigs()
+  .then((appConfigs) => {
     log.info({appConfigs}, "AppConfigs")
-
-    const deployActions = _.map(devices, (device) => {
-      return device.createDeployActions(appConfigs)
-    })
-
-    return Promise.all(deployActions).then((results) => {
-      console.log(util.inspect(results, {depth: -1}))
-
-      results.forEach((result) => {
-        result.executeActions()
-      })
-    })
-
+    return actionCreator.createDeployActions(appConfigs)
+  }).then((actions) => {
+    log.info({actions}, "Actions")
   }).catch((error) => {
     log.error({error}, "Error")
   })
