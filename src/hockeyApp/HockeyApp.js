@@ -3,7 +3,7 @@
 import _ from "lodash"
 import axios from "axios"
 
-import {options} from "./../setup"
+import {hockeyAppToken, customReleaseType} from "./../setup"
 import type {
   HockeyAppInfos,
   HockeyAppInfo,
@@ -22,7 +22,7 @@ export function getAppConfigs(): Promise<Array<AppConfig>> {
 function retrieveAllApps(): Promise<HockeyAppInfos> {
   return axios.get("https://rink.hockeyapp.net/api/2/apps", {
     headers: {
-      "X-HockeyAppToken": options.hockeyAppToken
+      "X-HockeyAppToken": hockeyAppToken
     }
   }).then((response) => {
     return response.data.apps
@@ -31,7 +31,7 @@ function retrieveAllApps(): Promise<HockeyAppInfos> {
 
 function selectDeployableApps(apps: HockeyAppInfos): Array<HockeyAppInfo> {
   return _.select(apps, {
-    custom_release_type: "deploydroid",
+    custom_release_type: customReleaseType,
     status: AVAILABLE
   })
 }
@@ -58,7 +58,7 @@ function retrieveVersion(appInfo: HockeyAppInfo): Promise<HockeyAppVersionInfo> 
   const url = `https://rink.hockeyapp.net/api/2/apps/${appInfo.public_identifier}/app_versions`
   return axios.get(url, {
     headers: {
-      "X-HockeyAppToken": options.hockeyAppToken
+      "X-HockeyAppToken": hockeyAppToken
     },
     params: {
       include_build_urls: true
