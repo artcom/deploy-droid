@@ -3,14 +3,15 @@
 import _ from "lodash"
 import axios from "axios"
 
-import {options, log} from "./../setup"
-import {
+import {options} from "./../setup"
+import type {
   HockeyAppInfos,
   HockeyAppInfo,
-  status,
   HockeyAppVersionInfo,
   AppConfig
 } from "./types"
+
+const AVAILABLE: number = 2
 
 export function getAppConfigs(): Promise<Array<AppConfig>> {
   return retrieveAllApps()
@@ -31,7 +32,7 @@ function retrieveAllApps(): Promise<HockeyAppInfos> {
 function selectDeployableApps(apps: HockeyAppInfos): Array<HockeyAppInfo> {
   return _.select(apps, {
     custom_release_type: "deploydroid",
-    status: status.AVAILABLE
+    status: AVAILABLE
   })
 }
 
@@ -68,7 +69,7 @@ function retrieveVersion(appInfo: HockeyAppInfo): Promise<HockeyAppVersionInfo> 
 }
 
 function getLatestAvailableVersion(appVersions: Array<HockeyAppVersionInfo>): HockeyAppVersionInfo {
-  const deployableVersions = _.select(appVersions, {status: status.AVAILABLE})
+  const deployableVersions = _.select(appVersions, {status: AVAILABLE})
   return deployableVersions[0]
 }
 
