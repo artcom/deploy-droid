@@ -1,5 +1,6 @@
 /* @flow */
 
+import _ from "lodash"
 import adbkit from "adbkit"
 
 import InformAction from "./informAction"
@@ -11,9 +12,31 @@ import type {Action, Device} from "./types"
 
 const adb = adbkit.createClient()
 
-export function getActions(device: Device, appConfigs: Array<AppConfig>): Promise<Array<Action>> {
-  const deployActions = appConfigs.map((appConfig) => createAction(device, appConfig))
-  return Promise.all(deployActions)
+export function filterDeployableActions(actions: Array<Action>): Array<Action> {
+  return _.reject(actions, (action) => {
+    return action.constructor.name.includes("InformAction")
+  })
+}
+
+export function createAllActionsForDevices(
+  [devices, appConfigs]: [Array<Device>, Array<AppConfig>]
+): Promise<Array<Action>> {
+
+  const createAllActions = devices.map(
+    (device) => createActionsForDevice(device, appConfigs)
+  )
+  return Promise.all(createAllActions).then((results) => {
+    return _.flatten(results)
+  })
+}
+
+function createActionsForDevice(
+  device: Device,
+  appConfigs: Array<AppConfig>
+): Promise<Array<Action>> {
+
+  const createActions = appConfigs.map((appConfig) => createAction(device, appConfig))
+  return Promise.all(createActions)
 }
 
 function createAction(device, appConfig) {
