@@ -34,6 +34,8 @@ export function createAllActionsForDevices(
   [devices, appConfigs]: [Array<Device>, Array<AppConfig>]
 ): Promise<Array<Action>> {
 
+  appConfigs.map((appConfig) => {log.info({appConfig}, "AppConfig")})
+
   const createAllActions = devices.map(
     (device) => createActionsForDevice(device, appConfigs)
   )
