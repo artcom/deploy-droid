@@ -1,3 +1,5 @@
+/* @flow */
+
 import adbkit from "adbkit"
 import bunyan from "bunyan"
 import {docopt} from "docopt"
@@ -23,7 +25,7 @@ export const hockeyAppToken = options["--hockeyAppToken"]
 export const customReleaseType = options["--customReleaseType"]
 const deviceDescriptorFile = options["--deviceDescriptorFile"]
 
-export function deviceDescription(deviceId) {
+export function deviceDescription(deviceId: string): Promise<string> {
   if (deviceDescriptorFile) {
     return adbShell(deviceId, `cat ${deviceDescriptorFile}`)
       .then((output) => {
@@ -34,7 +36,7 @@ export function deviceDescription(deviceId) {
   }
 }
 
-function adbShell(deviceId, command) {
+function adbShell(deviceId: string, command: string): Promise<string> {
   return adb.shell(deviceId, command)
     .then(adbkit.util.readAll)
     .then(function(output) {
