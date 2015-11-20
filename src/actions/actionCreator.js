@@ -3,14 +3,26 @@
 import _ from "lodash"
 import adbkit from "adbkit"
 
+import {adb, log} from "./../setup"
 import InformAction from "./informAction"
 import InstallAction from "./installAction"
 import UpdateAction from "./updateAction"
 
 import type {AppConfig} from "./../hockeyApp/types"
-import type {Action, Device} from "./types"
+import type {Action, Device, ActionsByDevice} from "./types"
 
-const adb = adbkit.createClient()
+export function groupActionsByDevice(actions: Array<Action>): Promise<ActionsByDevice> {
+  const actionsByDevice = _.reduce(actions, (actionsByDevices, action) => {
+    const deviceKey = action.device
+    if (!actionsByDevices[deviceKey]) {
+      actionsByDevices[deviceKey] = []
+    }
+
+    actionsByDevices[deviceKey].push(action)
+    return actionsByDevices
+  }, {})
+  return Promise.resolve(actionsByDevice)
+}
 
 export function filterDeployableActions(actions: Array<Action>): Array<Action> {
   return _.reject(actions, (action) => {
@@ -50,10 +62,10 @@ function createAction(device, appConfig) {
     })
 }
 
-function createActionForInstalledApp(device, appConfig) {
+function createActionForInstalledApp(device: Device, appConfig: AppConfig): Promise<Action> {
   return getInstalledVersion(device.id, appConfig.bundleIdentifier)
     .then((installedVersion) => {
-      if (parseInt(installedVersion) < parseInt(appConfig.version)) {
+      if (parseInt(installedVersion.versionCode) < parseInt(appConfig.version)) {
         return new UpdateAction(device.id, appConfig, installedVersion)
       }
 
@@ -62,11 +74,20 @@ function createActionForInstalledApp(device, appConfig) {
 )}
 
 function getInstalledVersion(deviceId, androidPackage) {
-  const versionRegex = /versionCode=(\d+)/
+  const versionCodeRegex = /versionCode=(\d+)/
+  const versionNameRegex = /versionName=([\d.]*)/
   return adb.shell(deviceId, `dumpsys package ${androidPackage}`)
     .then(adbkit.util.readAll)
     .then(function(output) {
-      const version = output.toString().match(versionRegex)[1]
-      return version
+      return {
+        versionCode: output.toString().match(versionCodeRegex)[1],
+        versionName: output.toString().match(versionNameRegex)[1]
+      }
+    })
+    .catch((error) => {
+      log.info(
+        {error},
+        `Error while getting version info of ${androidPackage} from device: ${deviceId}`
+      )
     })
 }

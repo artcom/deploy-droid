@@ -10,3 +10,5 @@ export type Device = {
 }
 
 export type Action = InformAction | InstallAction | UpdateAction
+
+export type ActionsByDevice = {[key: string]: Array<Action>}
