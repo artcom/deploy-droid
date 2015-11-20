@@ -24,11 +24,4 @@ appConfig: AppConfig;
     ]
   }
 
-  print() {
-    log.info({
-      version: this.appConfig.version,
-      app: this.appConfig.title,
-      device: this.device
-    }, "Installing version to device")
-  }
 }

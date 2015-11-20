@@ -32,12 +32,4 @@ export default class UpdateAction {
     ]
   }
 
-  print() {
-    log.info({
-      currentVersion: this.installedVersionName,
-      newVersion: this.appConfig.version,
-      app: this.appConfig.title,
-      device: this.device
-    }, "Updating version of device")
-  }
 }
