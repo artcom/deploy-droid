@@ -28,7 +28,7 @@ export default class UpdateAction {
     return [
       colors.red(this.appConfig.title),
       colors.red(this.installedVersionName),
-      this.appConfig.shortVersion
+      colors.green(this.appConfig.shortVersion)
     ]
   }
 

@@ -20,7 +20,7 @@ appConfig: AppConfig;
     return [
       colors.green(this.appConfig.title),
       colors.green(this.appConfig.shortVersion),
-      ""
+      colors.green(this.appConfig.shortVersion)
     ]
   }
 

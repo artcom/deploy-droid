@@ -7,7 +7,11 @@ export const adb = adbkit.createClient()
 
 const doc = `
   Usage:
-    deploydroid --hockeyAppToken=<token> --customReleaseType=<type> [--deviceDescriptorFile=<filepath>] --color
+    deploydroid
+      --color
+      --hockeyAppToken=<token>
+      --customReleaseType=<type>
+      [--deviceDescriptorFile=<filepath>]
 `
 
 const options = docopt(doc, {
@@ -17,15 +21,23 @@ const options = docopt(doc, {
 
 export const hockeyAppToken = options["--hockeyAppToken"]
 export const customReleaseType = options["--customReleaseType"]
+const deviceDescriptorFile = options["--deviceDescriptorFile"]
 
 export function deviceDescription(deviceId) {
-  if (options["--deviceDescriptorFile"]) {
-    return adb.shell(deviceId, `cat ${options["--deviceDescriptorFile"]}`)
-      .then(adbkit.util.readAll)
-      .then(function(output) {
-        return deviceId + ", " + output.toString()
+  if (deviceDescriptorFile) {
+    return adbShell(deviceId, `cat ${deviceDescriptorFile}`)
+      .then((output) => {
+        return deviceId + ", " + output
       })
   } else {
     return Promise.resolve(deviceId)
   }
+}
+
+function adbShell(deviceId, command) {
+  return adb.shell(deviceId, command)
+    .then(adbkit.util.readAll)
+    .then(function(output) {
+      return output.toString()
+    })
 }

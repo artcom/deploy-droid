@@ -20,7 +20,7 @@ appConfig: AppConfig;
     return [
       colors.red(this.appConfig.title),
       colors.grey("not deployed"),
-      this.appConfig.shortVersion
+      colors.green(this.appConfig.shortVersion)
     ]
   }
 
