@@ -68,7 +68,7 @@ function createActionForInstalledApp(device: Device, appConfig: AppConfig): Prom
   return getInstalledVersion(device.id, appConfig.bundleIdentifier)
     .then((installedVersion) => {
       if (parseInt(installedVersion.versionCode) < parseInt(appConfig.version)) {
-        return new UpdateAction(device.id, appConfig, installedVersion)
+        return new InstallAction(device.id, appConfig, installedVersion)
       }
 
       return new InformAction(device.id, appConfig)
