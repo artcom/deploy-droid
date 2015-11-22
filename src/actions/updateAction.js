@@ -12,6 +12,8 @@ import {log} from "./../setup"
 const wgetAsync = bluebird.promisify(wget)
 const statAsync = bluebird.promisify(fs.stat)
 
+const apkDownloadCache = {}
+
 export default class UpdateAction {
   /* jscs:disable disallowSemicolons */
   device: string;
@@ -29,7 +31,8 @@ export default class UpdateAction {
     this.appConfig = appConfig
     this.installedVersionCode = installedVersion.versionCode
     this.installedVersionName = installedVersion.versionName
-    Promise.resolve(this.createDownloadPromise(this.appConfig))
+
+    Promise.resolve(this.deploy(this.appConfig))
   }
 
   createPrintableRow(): Array<string> {
@@ -40,28 +43,39 @@ export default class UpdateAction {
     ]
   }
 
-  deploy() {
-
+  deploy(appConfig: AppConfig) {
+    this.downloadApk(appConfig)
+      .then((filepath) => {
+        log.info({filepath}, "FILEPATH")
+      })
   }
 
-  downloadApk() {
+  downloadApk(appConfig: AppConfig): Promise<string> {
     //create download promise key -> promise
-
+    const buildUrl = appConfig.buildUrl
+    if (apkDownloadCache[buildUrl]) {
+      return apkDownloadCache[buildUrl]
+    } else {
+      apkDownloadCache[buildUrl] = this.createDownloadPromise(appConfig)
+      return apkDownloadCache[buildUrl]
+    }
   }
 
   createDownloadPromise(appConfig: AppConfig): Promise<string> {
     const file = this.getFilepath(appConfig)
-    return statAsync(file).then((stats) => {
-      if (stats.isFile()) {
-        log.info({file}, "File exists, not downloading again")
+
+    return statAsync(file)
+      .then((stats) => {
+        log.info({stats, file}, "File exists, not downloading again")
         return file
-      } else {
+      })
+      .catch((error) => {
+        log.info({error, file}, "File does not exist, downloading ...")
         return wgetAsync({url: appConfig.buildUrl, dest: file})
          .then((response) => {
            return response.filepath
          })
-      }
-    })
+      })
   }
 
   getFilepath(appConfig: AppConfig): string {
