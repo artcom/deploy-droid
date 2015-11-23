@@ -9,8 +9,10 @@ Promise.all([adb.listDevices(), hockeyApp.getAppConfigs()])
   .then(actionCreator.createAllActionsForDevices)
   .then(printActionsByDevice)
   .then((deployableActions) => {
-    //deployableActions.map((action) => action.print())
-    return deployableActions
+    const deploy = deployableActions.map((action) => {
+      action.deploy()
+    })
+    return Promise.all(deploy)
   })
   .catch((error) => {
     log.error({error}, "Error")

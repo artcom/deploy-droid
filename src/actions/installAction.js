@@ -22,8 +22,6 @@ constructor(
   this.device = device
   this.appConfig = appConfig
   this.installedVersion = installedVersion
-
-  Promise.resolve(this.deploy(this.appConfig))
 }
 
   createPrintableRow(): Array<string> {
@@ -37,10 +35,13 @@ constructor(
     ]
   }
 
-  deploy(appConfig: AppConfig) {
-    downloadApk(appConfig)
+  deploy() {
+    downloadApk(this.appConfig)
       .then((filepath) => {
-        log.info({filepath}, "FILEPATH")
+        log.info({filepath, device: this.device}, "Will install apk to device")
+      })
+      .catch((error) => {
+        log.info({error, device: this.device}, "ERROR")
       })
   }
 

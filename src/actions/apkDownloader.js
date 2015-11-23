@@ -12,7 +12,6 @@ const statAsync = bluebird.promisify(fs.stat)
 const apkDownloadCache = {}
 
 export function downloadApk(appConfig: AppConfig): Promise<string> {
-  //create download promise key -> promise
   const buildUrl = appConfig.buildUrl
   if (apkDownloadCache[buildUrl]) {
     return apkDownloadCache[buildUrl]
@@ -26,14 +25,15 @@ function createDownloadPromise(appConfig: AppConfig): Promise<string> {
   const file = getFilepath(appConfig)
 
   return statAsync(file)
-    .then((stats) => {
-      log.info({stats, file}, "File exists, not downloading again")
+    .then(() => {
+      log.info({file}, "File exists, not downloading again")
       return file
     })
-    .catch((error) => {
-      log.info({error, file}, "File does not exist, downloading ...")
+    .catch(() => {
+      log.info({file}, "File does not exist, downloading ...")
       return wgetAsync({url: appConfig.buildUrl, dest: file})
        .then((response) => {
+         log.info({filepath: response.filepath}, "Downloaded apk to filepath")
          return response.filepath
        })
     })

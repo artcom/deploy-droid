@@ -6,23 +6,9 @@ import adbkit from "adbkit"
 import {adb, log} from "./../setup"
 import InformAction from "./informAction"
 import InstallAction from "./installAction"
-import UpdateAction from "./updateAction"
 
 import type {AppConfig} from "./../hockeyApp/types"
-import type {Action, Device, ActionsByDevice} from "./types"
-
-export function groupActionsByDevice(actions: Array<Action>): Promise<ActionsByDevice> {
-  const actionsByDevice = _.reduce(actions, (actionsByDevices, action) => {
-    const deviceKey = action.device
-    if (!actionsByDevices[deviceKey]) {
-      actionsByDevices[deviceKey] = []
-    }
-
-    actionsByDevices[deviceKey].push(action)
-    return actionsByDevices
-  }, {})
-  return Promise.resolve(actionsByDevice)
-}
+import type {Action, Device} from "./types"
 
 export function filterDeployableActions(actions: Array<Action>): Array<Action> {
   return _.reject(actions, (action) => {
