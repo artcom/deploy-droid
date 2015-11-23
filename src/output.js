@@ -3,7 +3,6 @@
 import _ from "lodash"
 import table from "text-table"
 
-import {log} from "./setup"
 import {deviceDescription} from "./setup"
 
 import type {Action} from "./actions/types"
@@ -56,7 +55,3 @@ function groupActionsByDevice(actions: Array<Action>): Promise<ActionsByDevice> 
   }, {})
   return Promise.resolve(actionsByDevice)
 }
-
-/*
-
-*/
