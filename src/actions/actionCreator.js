@@ -10,9 +10,9 @@ import InstallAction from "./installAction"
 import type {AppConfig} from "./../hockeyApp/types"
 import type {Action, Device} from "./types"
 
-export function filterDeployableActions(actions: Array<Action>): Array<Action> {
-  return _.reject(actions, (action) => {
-    return action.constructor.name.includes("InformAction")
+export function filterDeployableActions(actions: Array<Action>): Array<InstallAction> {
+  return _.filter(actions, (action) => {
+    return action.constructor.name.includes("InstallAction")
   })
 }
 

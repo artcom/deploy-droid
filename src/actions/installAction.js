@@ -36,7 +36,7 @@ constructor(
   }
 
   deploy() {
-    downloadApk(this.appConfig)
+    return downloadApk(this.appConfig)
       .then((filepath) => {
         log.info({filepath, device: this.device}, "Will install apk to device")
       })

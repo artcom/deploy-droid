@@ -2,15 +2,16 @@
 
 import {adb, log} from "./setup"
 import * as hockeyApp from "./hockeyApp/hockeyApp"
-import * as actionCreator from "./actions/actionCreator"
+import {createAllActionsForDevices, filterDeployableActions} from "./actions/actionCreator"
 import {printActionsByDevice} from "./printer"
 
 Promise.all([adb.listDevices(), hockeyApp.getAppConfigs()])
-  .then(actionCreator.createAllActionsForDevices)
+  .then(createAllActionsForDevices)
   .then(printActionsByDevice)
+  .then(filterDeployableActions)
   .then((deployableActions) => {
     const deploy = deployableActions.map((action) => {
-      action.deploy()
+      return action.deploy()
     })
     return Promise.all(deploy)
   })
