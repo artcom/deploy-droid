@@ -3,8 +3,8 @@
 import {adb, log} from "./setup"
 import * as hockeyApp from "./hockeyApp/hockeyApp"
 import {createAllActionsForDevices, filterDeployableActions} from "./actions/actionCreator"
-import {printActionsByDevice} from "./output"
-import {informUser} from "./input"
+import {printActionsByDevice} from "./printer"
+import {informUser} from "./informUser"
 
 Promise.all([adb.listDevices(), hockeyApp.getAppConfigs()])
   .then(createAllActionsForDevices)
