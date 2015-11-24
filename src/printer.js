@@ -15,7 +15,7 @@ export function startPrintingActions(actions: Array<Action>): Promise<Array<Acti
     formatActionsByDevice(actions).then((output) => {
       logUpdate(output)
     })
-  }, 5000)
+  }, 1000)
 
   return actions
 }
@@ -72,32 +72,3 @@ function makeOneOutput(formattedDevices: Array<string>): string {
   }, "")
   return combinedOuput
 }
-
-/*
-import colors from "colors/safe"
-import elegantSpinner from "elegant-spinner"
-
-
-export default function(message, promise) {
-  const spinner = elegantSpinner()
-  const interval = setInterval(function() {
-    logUpdate(colors.gray(`${message} ${spinner()}`))
-  }, 50)
-
-  function stopSpinner() {
-    clearInterval(interval)
-    logUpdate.clear()
-  }
-
-  return promise.then(
-    (result) => {
-      stopSpinner()
-      return result
-    },
-    (error) => {
-      stopSpinner()
-      throw error
-    }
-  )
-}
-*/

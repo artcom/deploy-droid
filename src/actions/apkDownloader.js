@@ -1,11 +1,9 @@
 /* @flow */
 
-import colors from "colors/safe"
 import fs from "fs"
 import wget from "wgetjs"
 import bluebird from "bluebird"
 import type {AppConfig} from "./../hockeyApp/types"
-import {log} from "./../setup"
 
 const wgetAsync = bluebird.promisify(wget)
 const statAsync = bluebird.promisify(fs.stat)
@@ -27,14 +25,11 @@ function createDownloadPromise(appConfig: AppConfig): Promise<string> {
 
   return statAsync(file)
     .then(() => {
-      console.log(colors.green(`Apk ${file} already downloaded`))
       return file
     })
     .catch(() => {
-      console.log(colors.grey(`Downloading apk ${appConfig.title}`))
       return wgetAsync({url: appConfig.buildUrl, dest: file})
        .then((response) => {
-         console.log(colors.green(`Downloaded apk to ${response.filepath}`))
          return response.filepath
        })
     })

@@ -6,11 +6,20 @@ import colors from "colors/safe"
 import type {AppConfig} from "./../hockeyApp/types"
 import {downloadApk} from "./apkDownloader"
 
+const apkDownloadState = {
+  INITIAL: "initial",
+  DOWNLOADING: "downloading",
+  DOWNLOADED: "downloaded"
+}
+
 export default class InstallAction {
 /* jscs:disable disallowSemicolons */
 device: string;
 appConfig: AppConfig;
 installedVersion: ?{versionCode:string, versionName:string};
+apkDownloadState: string;
+apkDownloadStateProgress: string;
+apkFilepath: string;
 /* jscs:enable disallowSemicolons */
 
 constructor(
@@ -21,24 +30,61 @@ constructor(
   this.device = device
   this.appConfig = appConfig
   this.installedVersion = installedVersion
+  this.apkDownloadState = apkDownloadState.INITIAL
+  this.apkDownloadStateProgress = ""
+  this.apkFilepath = "unknown"
 }
 
-  createPrintableRow(): Array<string> {
-    const versionName = _.get(this.installedVersion, ["versionName"])
-    const installationStatus = versionName ? colors.red(versionName) : colors.grey("not deployed")
+  deploy() {
+    this.apkDownloadState = apkDownloadState.DOWNLOADING
+    return downloadApk(this.appConfig)
+      .then((filepath) => {
+        this.apkFilepath = filepath
+        this.apkDownloadState = apkDownloadState.DOWNLOADED
+      })
+  }
 
+  createPrintableRow(): Array<string> {
     return [
-      colors.red(this.appConfig.title),
-      installationStatus,
-      colors.green(this.appConfig.shortVersion)
+      this.apkTitle(),
+      this.deployedVersion(),
+      this.newVersion(),
+      this.apkDownload()
     ]
   }
 
-  deploy() {
-    return downloadApk(this.appConfig)
-      .then((filepath) => {
-        console.log(colors.grey(`Will install apk ${filepath} to device ${this.device}`))
-      })
+  apkTitle(): string {
+    return colors.red(this.appConfig.title)
+  }
+
+  deployedVersion(): string {
+    const versionName = _.get(this.installedVersion, ["versionName"])
+    return versionName ? colors.red(versionName) : colors.grey("not deployed")
+  }
+
+  newVersion(): string {
+    return colors.green(this.appConfig.shortVersion)
+  }
+
+  apkDownload(): string {
+    switch (this.apkDownloadState) {
+      case apkDownloadState.INITIAL:
+        return ""
+      case apkDownloadState.DOWNLOADING:
+        return colors.grey("downloading" + this.getApkDownloadStateProgress())
+      case apkDownloadState.DOWNLOADED:
+        return colors.green("apk downloaded")
+      default:
+        return ""
+    }
+  }
+
+  getApkDownloadStateProgress(): string {
+    if (this.apkDownloadStateProgress.includes("...")) {
+      this.apkDownloadStateProgress = ""
+    }
+
+    return this.apkDownloadStateProgress += "."
   }
 
 }
