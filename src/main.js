@@ -9,8 +9,8 @@ import {informUser} from "./informUser"
 Promise.all([adb.listDevices(), hockeyApp.getAppConfigs()])
   .then(createAllActionsForDevices)
   .then(printActionsByDevice)
-  .then(filterDeployableActions)
   .then(informUser)
+  .then(filterDeployableActions)
   .then((deployableActions) => {
     const deploy = deployableActions.map((action) => {
       return action.deploy()

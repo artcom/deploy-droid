@@ -10,10 +10,11 @@ import InstallAction from "./installAction"
 import type {AppConfig} from "./../hockeyApp/types"
 import type {Action, Device} from "./types"
 
-export function filterDeployableActions(actions: Array<Action>): Array<InstallAction> {
-  return _.filter(actions, (action) => {
+export function filterDeployableActions(actions: Array<Action>): Promise<Array<InstallAction>> {
+  const installActions = _.filter(actions, (action) => {
     return action.constructor.name.includes("InstallAction")
   })
+  return Promise.resolve(installActions)
 }
 
 export function createAllActionsForDevices(
