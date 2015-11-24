@@ -3,13 +3,14 @@
 import {adb, log} from "./setup"
 import * as hockeyApp from "./hockeyApp/hockeyApp"
 import {createAllActionsForDevices, filterDeployableActions} from "./actions/actionCreator"
-import {printActionsByDevice} from "./printer"
+import {printActions, startPrintingActions} from "./printer"
 import {informUser} from "./informUser"
 
 Promise.all([adb.listDevices(), hockeyApp.getAppConfigs()])
   .then(createAllActionsForDevices)
-  .then(printActionsByDevice)
+  .then(printActions)
   .then(informUser)
+  .then(startPrintingActions)
   .then(filterDeployableActions)
   .then((deployableActions) => {
     const deploy = deployableActions.map((action) => {

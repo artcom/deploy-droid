@@ -1,5 +1,4 @@
-/* @flow */
-
+import logUpdate from "log-update"
 import _ from "lodash"
 import table from "text-table"
 
@@ -10,36 +9,36 @@ import type {Action} from "./actions/types"
 type Device = string
 type ActionsByDevice = {[key: Device]: Array<Action>}
 
-export function printActionsByDevice(actions: Array<Action>): Promise<Array<Action>> {
-  return groupAndFormat(actions)
-    .then((results) => {
-      results.map(printDevice)
-      return actions
+export function startPrintingActions(actions: Array<Action>): Promise<Array<Action>> {
+  logUpdate.clear()
+  setInterval(function() {
+    formatActionsByDevice(actions).then((output) => {
+      logUpdate(output)
     })
+  }, 5000)
+
+  return actions
 }
 
-function printDevice(formattedDevice: string) {
-  console.log(formattedDevice)
+export function printActions(actions: Array<Action>): Promise<Array<Action>> {
+  return formatActionsByDevice(actions).then((output) => {
+    logUpdate(output)
+    return actions
+  })
 }
 
-function groupAndFormat(actions: Array<Action>): Promise<Array<string>> {
+function formatActionsByDevice(actions: Array<Action>): string {
+  return formatAllDevices(actions)
+    .then(makeOneOutput)
+}
+
+function formatAllDevices(actions: Array<Action>): Promise<Array<string>> {
   return groupActionsByDevice(actions)
     .then((actionsByDevice) => {
-      const deviceFormats = _.map(actionsByDevice, (actions, device) => {
+      const formatAllDevices = _.map(actionsByDevice, (actions, device) => {
         return formatDevice(actions, device)
       })
-      return Promise.all(deviceFormats)
-    })
-}
-
-function formatDevice(actions: Array<Action>, device: Device): Promise<string> {
-  return deviceDescription(device)
-    .then((description) => {
-      const deviceHeader = "Deploy status for device: " + description
-      const printableRows = actions.map((action) => {
-        return action.createPrintableRow()
-      })
-      return deviceHeader + "\n" + table(printableRows) + "\n"
+      return Promise.all(formatAllDevices)
     })
 }
 
@@ -55,3 +54,50 @@ function groupActionsByDevice(actions: Array<Action>): Promise<ActionsByDevice> 
   }, {})
   return Promise.resolve(actionsByDevice)
 }
+
+function formatDevice(actions: Array<Action>, device: Device): Promise<string> {
+  return deviceDescription(device)
+    .then((description) => {
+      const deviceHeader = "Deploy status for device: " + description
+      const printableRows = actions.map((action) => {
+        return action.createPrintableRow()
+      })
+      return deviceHeader + "\n" + table(printableRows) + "\n"
+    })
+}
+
+function makeOneOutput(formattedDevices: Array<string>): string {
+  const combinedOuput: string = _.reduce(formattedDevices, (combinedOuput, formattedDevice) => {
+    return combinedOuput + formattedDevice + "\n"
+  }, "")
+  return combinedOuput
+}
+
+/*
+import colors from "colors/safe"
+import elegantSpinner from "elegant-spinner"
+
+
+export default function(message, promise) {
+  const spinner = elegantSpinner()
+  const interval = setInterval(function() {
+    logUpdate(colors.gray(`${message} ${spinner()}`))
+  }, 50)
+
+  function stopSpinner() {
+    clearInterval(interval)
+    logUpdate.clear()
+  }
+
+  return promise.then(
+    (result) => {
+      stopSpinner()
+      return result
+    },
+    (error) => {
+      stopSpinner()
+      throw error
+    }
+  )
+}
+*/
