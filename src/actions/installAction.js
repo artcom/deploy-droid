@@ -4,7 +4,6 @@ import _ from "lodash"
 import colors from "colors/safe"
 
 import type {AppConfig} from "./../hockeyApp/types"
-import {log} from "./../setup"
 import {downloadApk} from "./apkDownloader"
 
 export default class InstallAction {
@@ -38,10 +37,7 @@ constructor(
   deploy() {
     return downloadApk(this.appConfig)
       .then((filepath) => {
-        log.info({filepath, device: this.device}, "Will install apk to device")
-      })
-      .catch((error) => {
-        log.info({error, device: this.device}, "ERROR")
+        console.log(colors.grey(`Will install apk ${filepath} to device ${this.device}`))
       })
   }
 

@@ -1,5 +1,6 @@
 /* @flow */
 
+import colors from "colors/safe"
 import fs from "fs"
 import wget from "wgetjs"
 import bluebird from "bluebird"
@@ -26,14 +27,14 @@ function createDownloadPromise(appConfig: AppConfig): Promise<string> {
 
   return statAsync(file)
     .then(() => {
-      log.info({file}, "File exists, not downloading again")
+      console.log(colors.green(`Apk ${file} already downloaded`))
       return file
     })
     .catch(() => {
-      log.info({file}, "File does not exist, downloading ...")
+      console.log(colors.grey(`Downloading apk ${appConfig.title}`))
       return wgetAsync({url: appConfig.buildUrl, dest: file})
        .then((response) => {
-         log.info({filepath: response.filepath}, "Downloaded apk to filepath")
+         console.log(colors.green(`Downloaded apk to ${response.filepath}`))
          return response.filepath
        })
     })
