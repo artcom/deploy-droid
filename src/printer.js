@@ -9,7 +9,7 @@ import type {Action} from "./actions/types"
 type Device = string
 type ActionsByDevice = {[key: Device]: Array<Action>}
 
-export function startPrintingActions(actions: Array<Action>): Promise<Array<Action>> {
+export function startPrintingStatus(actions: Array<Action>): Promise<Array<Action>> {
   logUpdate.clear()
   setInterval(function() {
     formatActionsByDevice(actions).then((output) => {
