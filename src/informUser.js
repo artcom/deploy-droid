@@ -10,17 +10,18 @@ import {printActions} from "./printer"
 const readAsync = bluebird.promisify(read)
 
 export function informUser(actions) {
-  const deployableActions = filterDeployableActions(actions)
-
-  if (_.isEmpty(deployableActions)) {
-    console.log("All Apps up-to-date")
-    process.exit()
-  } else {
-    return printActions(actions).then((description) => {
+  return printActions(actions)
+    .then((description) => {
       logUpdate(description)
-      return confirmActions(actions)
+
+      const deployableActions = filterDeployableActions(actions)
+      if (_.isEmpty(deployableActions)) {
+        console.log("All Apps up-to-date")
+        process.exit()
+      } else {
+        return confirmActions(actions)
+      }
     })
-  }
 }
 
 function confirmActions(actions) {
