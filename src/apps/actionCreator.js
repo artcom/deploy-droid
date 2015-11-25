@@ -9,44 +9,44 @@ import App, {apkInstallState} from "./app"
 import type {AppConfig} from "./../hockeyApp/types"
 import type {Device} from "./types"
 
-export function filterDeployableActions(apps: Array<App>): Array<App> {
+export function filterDeployableApps(apps: Array<App>): Array<App> {
   return _.reject(apps, (app) => {
     return app.apkInstallState === apkInstallState.INSTALLED
   })
 }
 
-export function createAllActionsForDevices(
+export function createAllAppsForDevices(
   [devices, appConfigs]: [Array<Device>, Array<AppConfig>]
 ): Promise<Array<App>> {
-  const createAllActions = devices.map(
-    (device) => createActionsForDevice(device, appConfigs)
+  const createAllApps = devices.map(
+    (device) => createAppsForDevice(device, appConfigs)
   )
-  return Promise.all(createAllActions).then((results) => {
+  return Promise.all(createAllApps).then((results) => {
     return _.flatten(results)
   })
 }
 
-function createActionsForDevice(
+function createAppsForDevice(
   device: Device,
   appConfigs: Array<AppConfig>
 ): Promise<Array<App>> {
 
-  const createActions = appConfigs.map((appConfig) => createAction(device, appConfig))
-  return Promise.all(createActions)
+  const createApps = appConfigs.map((appConfig) => createApp(device, appConfig))
+  return Promise.all(createApps)
 }
 
-function createAction(device, appConfig) {
+function createApp(device, appConfig) {
   return adb.isInstalled(device.id, appConfig.bundleIdentifier)
     .then((isInstalled) => {
       if (isInstalled) {
-        return createActionForInstalledApp(device, appConfig)
+        return createAppForInstalledApp(device, appConfig)
       } else {
         return new App(device.id, appConfig)
       }
     })
 }
 
-function createActionForInstalledApp(device: Device, appConfig: AppConfig): Promise<App> {
+function createAppForInstalledApp(device: Device, appConfig: AppConfig): Promise<App> {
   return getInstalledVersion(device.id, appConfig.bundleIdentifier)
     .then((installedVersion) => {
       return new App(device.id, appConfig, installedVersion)

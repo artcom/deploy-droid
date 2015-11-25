@@ -4,7 +4,7 @@ import logUpdate from "log-update"
 import read from "read"
 import yn from "yn"
 
-import {filterDeployableActions} from "./apps/actionCreator"
+import {filterDeployableApps} from "./apps/actionCreator"
 import {describeActions} from "./printer"
 
 const readAsync = bluebird.promisify(read)
@@ -14,7 +14,7 @@ export function informUser(apps) {
     .then((description) => {
       logUpdate(description)
 
-      const deployableActions = filterDeployableActions(apps)
+      const deployableActions = filterDeployableApps(apps)
       if (_.isEmpty(deployableActions)) {
         console.log("All Apps up-to-date")
         process.exit()

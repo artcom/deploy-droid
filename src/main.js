@@ -4,16 +4,16 @@ import logUpdate from "log-update"
 
 import {adb, log} from "./setup"
 import * as hockeyApp from "./hockeyApp/hockeyApp"
-import {createAllActionsForDevices, filterDeployableActions} from "./apps/actionCreator"
+import {createAllAppsForDevices, filterDeployableApps} from "./apps/actionCreator"
 import {describeActions} from "./printer"
 import {informUser} from "./informUser"
 
 Promise.all([adb.listDevices(), hockeyApp.getAppConfigs()])
-  .then(createAllActionsForDevices)
+  .then(createAllAppsForDevices)
   .then(informUser)
   .then((apps) => {
-    const deployableActions = filterDeployableActions(apps)
-    showProgress(() => describeActions(apps), deployApps(deployableActions))
+    const deployableApps = filterDeployableApps(apps)
+    showProgress(() => describeActions(apps), deployApps(deployableApps))
   })
   .catch((error) => {
     log.error({error}, "Error")
