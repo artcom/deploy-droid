@@ -2,5 +2,6 @@
 
 export type Device = {
   id: string,
-  type: string
+  type: string,
+  description: string
 }
