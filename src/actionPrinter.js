@@ -2,20 +2,7 @@
 
 import _ from "lodash"
 import colors from "colors/safe"
-import InstallAction from "./actions/installAction"
-
-const apkDownloadState = {
-  INITIAL: "initial",
-  DOWNLOADING: "downloading",
-  DOWNLOADED: "downloaded"
-}
-
-const apkInstallState = {
-  NOT_INSTALLED: "notInstalled",
-  NEEDS_UPDATE: "needsUpdate",
-  INSTALLING: "installing",
-  INSTALLED: "installed"
-}
+import InstallAction, {apkInstallState, apkDownloadState} from "./actions/installAction"
 
 export function createPrintableRow(action: InstallAction): Array<string> {
   return [

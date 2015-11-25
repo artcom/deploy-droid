@@ -6,7 +6,7 @@ import {downloadApk} from "./apkDownloader"
 
 import type {AppConfig} from "./../hockeyApp/types"
 
-const apkDownloadState = {
+export const apkDownloadState = {
   INITIAL: "initial",
   DOWNLOADING: "downloading",
   DOWNLOADED: "downloaded"
