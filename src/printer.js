@@ -11,7 +11,7 @@ import {createPrintableRow} from "./appPrinter"
 import App from "./apps/App"
 
 type Device = string
-type ActionsByDevice = {[key: Device]: Array<App>}
+type AppsByDevice = {[key: Device]: Array<App>}
 
 export function showDescription(describe: Function, promise: Promise): Promise {
   const interval = setInterval(function() {
@@ -35,13 +35,13 @@ export function showDescription(describe: Function, promise: Promise): Promise {
   )
 }
 
-export function describeActions(apps: Array<App>): Promise<string> {
+export function describeApps(apps: Array<App>): Promise<string> {
   return formatAllDevices(apps)
     .then(makeOneOutput)
 }
 
 function formatAllDevices(apps: Array<App>): Promise<Array<string>> {
-  return groupActionsByDevice(apps)
+  return groupAppsByDevice(apps)
     .then((appsByDevice) => {
       const formatAllDevices = _.map(appsByDevice, (apps, device) => {
         return formatDevice(apps, device)
@@ -50,7 +50,7 @@ function formatAllDevices(apps: Array<App>): Promise<Array<string>> {
     })
 }
 
-function groupActionsByDevice(apps: Array<App>): Promise<ActionsByDevice> {
+function groupAppsByDevice(apps: Array<App>): Promise<AppsByDevice> {
   const appsByDevice = _.reduce(apps, (appsByDevices, app) => {
     const deviceKey = app.device
     if (!appsByDevices[deviceKey]) {

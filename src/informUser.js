@@ -5,26 +5,26 @@ import read from "read"
 import yn from "yn"
 
 import {filterDeployableApps} from "./apps/appCreator"
-import {describeActions} from "./printer"
+import {describeApps} from "./printer"
 
 const readAsync = bluebird.promisify(read)
 
 export function informUser(apps) {
-  return describeActions(apps)
+  return describeApps(apps)
     .then((description) => {
       logUpdate(description)
 
-      const deployableActions = filterDeployableApps(apps)
-      if (_.isEmpty(deployableActions)) {
+      const deployableApps = filterDeployableApps(apps)
+      if (_.isEmpty(deployableApps)) {
         console.log("All Apps up-to-date")
         process.exit()
       } else {
-        return confirmActions(apps)
+        return confirmApps(apps)
       }
     })
 }
 
-function confirmActions(apps) {
+function confirmApps(apps) {
   return readAsync({ prompt: "apply changes (y/N)?" })
     .then((response) => {
       if (yn(response)) {
