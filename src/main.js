@@ -4,7 +4,7 @@ import logUpdate from "log-update"
 
 import {adb, log} from "./setup"
 import * as hockeyApp from "./hockeyApp/hockeyApp"
-import {createAllAppsForDevices, filterDeployableApps} from "./apps/actionCreator"
+import {createAllAppsForDevices, filterDeployableApps} from "./apps/appCreator"
 import {describeActions} from "./printer"
 import {informUser} from "./informUser"
 
@@ -19,9 +19,9 @@ Promise.all([adb.listDevices(), hockeyApp.getAppConfigs()])
     log.error({error}, "Error")
   })
 
-function deployApps(deployableActions) {
-  const deploy = deployableActions.map((deployableAction) => {
-    return deployableAction.deploy()
+function deployApps(deployableApps) {
+  const deploy = deployableApps.map((deployableApp) => {
+    return deployableApp.deploy()
   })
   return Promise.all(deploy)
 }

@@ -4,7 +4,7 @@ import logUpdate from "log-update"
 import read from "read"
 import yn from "yn"
 
-import {filterDeployableApps} from "./apps/actionCreator"
+import {filterDeployableApps} from "./apps/appCreator"
 import {describeActions} from "./printer"
 
 const readAsync = bluebird.promisify(read)
