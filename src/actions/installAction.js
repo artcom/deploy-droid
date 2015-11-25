@@ -38,16 +38,29 @@ constructor(
   this.appConfig = appConfig
 
   this.installedVersion = installedVersion
-  if (installedVersion) {
-    this.apkInstallState = apkInstallState.NEEDS_UPDATE
-  } else {
-    this.apkInstallState = apkInstallState.NOT_INSTALLED
-  }
+  this.apkInstallState = this.determineApkInstallState()
 
   this.apkDownloadState = apkDownloadState.INITIAL
   this.apkDownloadStateProgress = ""
   this.apkFilepath = "unknown"
 }
+
+  determineApkInstallState(): string {
+    if (this.installedVersion) {
+      if (this.needsUpdate()) {
+        return apkInstallState.NEEDS_UPDATE
+      }
+
+      return apkInstallState.INSTALLED
+    } else {
+      return apkInstallState.NOT_INSTALLED
+    }
+  }
+
+  needsUpdate(): boolean {
+    const str = _.get(this.installedVersion, "versionCode", -1)
+    return parseInt(this.appConfig.version) > parseInt(str)
+  }
 
   deploy() {
     return this.startApkDownload()
