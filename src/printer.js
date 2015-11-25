@@ -5,7 +5,7 @@ import _ from "lodash"
 import table from "text-table"
 
 import {deviceDescription} from "./setup"
-import {createPrintableRow} from "./actionPrinter"
+import {createPrintableRow} from "./appPrinter"
 
 import App from "./apps/App"
 
