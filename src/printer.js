@@ -1,7 +1,8 @@
 /* @flow */
 
-import colors from "colors/safe"
 import _ from "lodash"
+import colors from "colors/safe"
+import logUpdate from "log-update"
 import table from "text-table"
 
 import {deviceDescription} from "./setup"
@@ -11,6 +12,28 @@ import App from "./apps/App"
 
 type Device = string
 type ActionsByDevice = {[key: Device]: Array<App>}
+
+export function showDescription(describe: Function, promise: Promise): Promise {
+  const interval = setInterval(function() {
+    describe().then(logUpdate)
+  }, 500)
+
+  function stop() {
+    clearInterval(interval)
+    describe().then(logUpdate)
+  }
+
+  return promise.then(
+    (result) => {
+      stop()
+      return result
+    },
+    (error) => {
+      stop()
+      throw error
+    }
+  )
+}
 
 export function describeActions(apps: Array<App>): Promise<string> {
   return formatAllDevices(apps)
