@@ -49,10 +49,6 @@ function createAction(device, appConfig) {
 function createActionForInstalledApp(device: Device, appConfig: AppConfig): Promise<InstallAction> {
   return getInstalledVersion(device.id, appConfig.bundleIdentifier)
     .then((installedVersion) => {
-      if (parseInt(installedVersion.versionCode) < parseInt(appConfig.version)) {
-        return new InstallAction(device.id, appConfig, installedVersion)
-      }
-
       return new InstallAction(device.id, appConfig, installedVersion)
     }
 )}
