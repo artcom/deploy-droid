@@ -10,7 +10,7 @@ import {describeApps} from "./printer"
 const readAsync = bluebird.promisify(read)
 
 export function informUser(apps) {
-  return describeApps(apps)
+  return Promise.resolve(describeApps(apps))
     .then((description) => {
       logUpdate(description)
 
