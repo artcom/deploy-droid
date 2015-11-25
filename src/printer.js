@@ -1,33 +1,18 @@
-import logUpdate from "log-update"
+/* @flow */
+
+import colors from "colors/safe"
 import _ from "lodash"
 import table from "text-table"
 
 import {deviceDescription} from "./setup"
+import {createPrintableRow} from "./actionPrinter"
 
 import type {Action} from "./actions/types"
 
 type Device = string
 type ActionsByDevice = {[key: Device]: Array<Action>}
 
-export function startPrintingStatus(actions: Array<Action>): Promise<Array<Action>> {
-  logUpdate.clear()
-  setInterval(function() {
-    formatActionsByDevice(actions).then((output) => {
-      logUpdate(output)
-    })
-  }, 1000)
-
-  return actions
-}
-
-export function printActions(actions: Array<Action>): Promise<Array<Action>> {
-  return formatActionsByDevice(actions).then((output) => {
-    logUpdate(output)
-    return actions
-  })
-}
-
-function formatActionsByDevice(actions: Array<Action>): string {
+export function printActions(actions: Array<Action>): Promise<string> {
   return formatAllDevices(actions)
     .then(makeOneOutput)
 }
@@ -58,9 +43,9 @@ function groupActionsByDevice(actions: Array<Action>): Promise<ActionsByDevice> 
 function formatDevice(actions: Array<Action>, device: Device): Promise<string> {
   return deviceDescription(device)
     .then((description) => {
-      const deviceHeader = "Deploy status for device: " + description
+      const deviceHeader = colors.underline(`Deploy status for device: ${description}`)
       const printableRows = actions.map((action) => {
-        return action.createPrintableRow()
+        return createPrintableRow(action)
       })
       return deviceHeader + "\n" + table(printableRows) + "\n"
     })

@@ -1,18 +1,20 @@
 /* @flow */
 
+import logUpdate from "log-update"
+
 import {adb, log} from "./setup"
 import * as hockeyApp from "./hockeyApp/hockeyApp"
 import {createAllActionsForDevices, filterDeployableActions} from "./actions/actionCreator"
-import {printActions, startPrintingStatus} from "./printer"
+import {printActions} from "./printer"
 import {informUser} from "./informUser"
 
 Promise.all([adb.listDevices(), hockeyApp.getAppConfigs()])
   .then(createAllActionsForDevices)
-  .then(printActions)
   .then(informUser)
-  .then(startPrintingStatus)
-  .then(filterDeployableActions)
-  .then(deployApps)
+  .then((actions) => {
+    const deployableActions = filterDeployableActions(actions)
+    showProgress(() => printActions(actions), deployApps(deployableActions))
+  })
   .catch((error) => {
     log.error({error}, "Error")
   })
@@ -22,4 +24,26 @@ function deployApps(deployableActions) {
     return deployableAction.deploy()
   })
   return Promise.all(deploy)
+}
+
+function showProgress(print, promise) {
+  const interval = setInterval(function() {
+    print().then(logUpdate)
+  }, 50)
+
+  function stop() {
+    clearInterval(interval)
+    print().then(logUpdate)
+  }
+
+  return promise.then(
+    (result) => {
+      stop()
+      return result
+    },
+    (error) => {
+      stop()
+      throw error
+    }
+  )
 }

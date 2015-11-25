@@ -1,15 +1,21 @@
 /* @flow */
 
-import _ from "lodash"
-import colors from "colors/safe"
+import {adb} from "./../setup"
+import {downloadApk} from "./apkDownloader"
 
 import type {AppConfig} from "./../hockeyApp/types"
-import {downloadApk} from "./apkDownloader"
 
 const apkDownloadState = {
   INITIAL: "initial",
   DOWNLOADING: "downloading",
   DOWNLOADED: "downloaded"
+}
+
+const apkInstallState = {
+  NOT_INSTALLED: "notInstalled",
+  NEEDS_UPDATE: "needsUpdate",
+  INSTALLING: "installing",
+  INSTALLED: "installed"
 }
 
 export default class InstallAction {
@@ -20,6 +26,7 @@ installedVersion: ?{versionCode:string, versionName:string};
 apkDownloadState: string;
 apkDownloadStateProgress: string;
 apkFilepath: string;
+apkInstallState: string;
 /* jscs:enable disallowSemicolons */
 
 constructor(
@@ -29,62 +36,41 @@ constructor(
 ) {
   this.device = device
   this.appConfig = appConfig
+
   this.installedVersion = installedVersion
+  if (installedVersion) {
+    this.apkInstallState = apkInstallState.NEEDS_UPDATE
+  } else {
+    this.apkInstallState = apkInstallState.NOT_INSTALLED
+  }
+
   this.apkDownloadState = apkDownloadState.INITIAL
   this.apkDownloadStateProgress = ""
   this.apkFilepath = "unknown"
 }
 
   deploy() {
+    return this.startApkDownload()
+      .then((filepath) => {
+        return this.installApk(filepath)
+      })
+  }
+
+  startApkDownload() {
     this.apkDownloadState = apkDownloadState.DOWNLOADING
     return downloadApk(this.appConfig)
       .then((filepath) => {
         this.apkFilepath = filepath
         this.apkDownloadState = apkDownloadState.DOWNLOADED
+        return filepath
       })
   }
 
-  createPrintableRow(): Array<string> {
-    return [
-      this.apkTitle(),
-      this.deployedVersion(),
-      this.newVersion(),
-      this.apkDownload()
-    ]
+  installApk(filepath: string) {
+    this.apkInstallState = apkInstallState.INSTALLING
+    return adb.install(this.device, filepath)
+      .then(() => {
+        this.apkInstallState = apkInstallState.INSTALLED
+      })
   }
-
-  apkTitle(): string {
-    return colors.red(this.appConfig.title)
-  }
-
-  deployedVersion(): string {
-    const versionName = _.get(this.installedVersion, ["versionName"])
-    return versionName ? colors.red(versionName) : colors.grey("not deployed")
-  }
-
-  newVersion(): string {
-    return colors.green(this.appConfig.shortVersion)
-  }
-
-  apkDownload(): string {
-    switch (this.apkDownloadState) {
-      case apkDownloadState.INITIAL:
-        return ""
-      case apkDownloadState.DOWNLOADING:
-        return colors.grey("downloading" + this.getApkDownloadStateProgress())
-      case apkDownloadState.DOWNLOADED:
-        return colors.green("apk downloaded")
-      default:
-        return ""
-    }
-  }
-
-  getApkDownloadStateProgress(): string {
-    if (this.apkDownloadStateProgress.includes("...")) {
-      this.apkDownloadStateProgress = ""
-    }
-
-    return this.apkDownloadStateProgress += "."
-  }
-
 }

@@ -10,7 +10,6 @@ export const adb = adbkit.createClient()
 const doc = `
   Usage:
     deploydroid
-      --color
       --hockeyAppToken=<token>
       --customReleaseType=<type>
       [--deviceDescriptorFile=<filepath>]
@@ -29,6 +28,7 @@ export function deviceDescription(deviceId: string): Promise<string> {
   if (deviceDescriptorFile) {
     return adbShell(deviceId, `cat ${deviceDescriptorFile}`)
       .then((output) => {
+        output = output.replace(/(?:\r\n|\r|\n)/g, "<br />")
         return deviceId + ", " + output
       })
   } else {
