@@ -10,7 +10,7 @@ import {createPrintableRow} from "./appPrinter"
 
 import App from "./apps/App"
 
-type AppsByDevice = {[key: string]: Array<App>}
+type AppsByDeviceId = {[key: string]: Array<App>}
 
 export function showDescription(describe: Function, promise: Promise): Promise {
   const interval = setInterval(function() {
@@ -40,7 +40,7 @@ export function describeApps(apps: Array<App>): Promise<string> {
 }
 
 function formatAllDevices(apps: Array<App>): Promise<Array<string>> {
-  return groupAppsByDevice(apps)
+  return groupAppsByDeviceId(apps)
     .then((appsByDevice) => {
       const formatAllDevices = _.map(appsByDevice, (apps, deviceId) => {
         return formatDevice(apps, deviceId)
@@ -49,15 +49,15 @@ function formatAllDevices(apps: Array<App>): Promise<Array<string>> {
     })
 }
 
-function groupAppsByDevice(apps: Array<App>): Promise<AppsByDevice> {
-  const appsByDevice = _.reduce(apps, (appsByDevices, app) => {
-    const deviceId = app.device
-    if (!appsByDevices[deviceId]) {
-      appsByDevices[deviceId] = []
+function groupAppsByDeviceId(apps: Array<App>): Promise<AppsByDeviceId> {
+  const appsByDevice = _.reduce(apps, (appsByDeviceIds, app) => {
+    const deviceId = app.device.id
+    if (!appsByDeviceIds[deviceId]) {
+      appsByDeviceIds[deviceId] = []
     }
 
-    appsByDevices[deviceId].push(app)
-    return appsByDevices
+    appsByDeviceIds[deviceId].push(app)
+    return appsByDeviceIds
   }, {})
   return Promise.resolve(appsByDevice)
 }

@@ -41,7 +41,7 @@ function createApp(device, appConfig) {
       if (isInstalled) {
         return createAppForInstalledApp(device, appConfig)
       } else {
-        return new App(device.id, appConfig)
+        return new App(device, appConfig)
       }
     })
 }
@@ -49,7 +49,7 @@ function createApp(device, appConfig) {
 function createAppForInstalledApp(device: Device, appConfig: AppConfig): Promise<App> {
   return getInstalledVersion(device.id, appConfig.bundleIdentifier)
     .then((installedVersion) => {
-      return new App(device.id, appConfig, installedVersion)
+      return new App(device, appConfig, installedVersion)
     }
 )}
 

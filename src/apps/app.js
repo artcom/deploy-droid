@@ -5,6 +5,7 @@ import {adb} from "./../setup"
 import {downloadApk} from "./apkDownloader"
 
 import type {AppConfig} from "./../hockeyApp/types"
+import type {Device} from "./types"
 
 export const apkDownloadState = {
   INITIAL: "initial",
@@ -21,7 +22,7 @@ export const apkInstallState = {
 
 export default class App {
 /* jscs:disable disallowSemicolons */
-device: string;
+device: Device;
 appConfig: AppConfig;
 installedVersion: ?{versionCode:string, versionName:string};
 apkDownloadState: string;
@@ -31,7 +32,7 @@ apkInstallState: string;
 /* jscs:enable disallowSemicolons */
 
 constructor(
-  device: string,
+  device: Device,
   appConfig: AppConfig,
   installedVersion: ?{versionCode:string, versionName:string}
 ) {
@@ -82,7 +83,7 @@ constructor(
 
   installApk(filepath: string) {
     this.apkInstallState = apkInstallState.INSTALLING
-    return adb.install(this.device, filepath)
+    return adb.install(this.device.id, filepath)
       .then(() => {
         this.apkInstallState = apkInstallState.INSTALLED
       })
