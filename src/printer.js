@@ -7,17 +7,17 @@ import table from "text-table"
 import {deviceDescription} from "./setup"
 import {createPrintableRow} from "./actionPrinter"
 
-import type {Action} from "./actions/types"
+import InstallAction from "./actions/InstallAction"
 
 type Device = string
-type ActionsByDevice = {[key: Device]: Array<Action>}
+type ActionsByDevice = {[key: Device]: Array<InstallAction>}
 
-export function describeActions(actions: Array<Action>): Promise<string> {
+export function describeActions(actions: Array<InstallAction>): Promise<string> {
   return formatAllDevices(actions)
     .then(makeOneOutput)
 }
 
-function formatAllDevices(actions: Array<Action>): Promise<Array<string>> {
+function formatAllDevices(actions: Array<InstallAction>): Promise<Array<string>> {
   return groupActionsByDevice(actions)
     .then((actionsByDevice) => {
       const formatAllDevices = _.map(actionsByDevice, (actions, device) => {
@@ -27,7 +27,7 @@ function formatAllDevices(actions: Array<Action>): Promise<Array<string>> {
     })
 }
 
-function groupActionsByDevice(actions: Array<Action>): Promise<ActionsByDevice> {
+function groupActionsByDevice(actions: Array<InstallAction>): Promise<ActionsByDevice> {
   const actionsByDevice = _.reduce(actions, (actionsByDevices, action) => {
     const deviceKey = action.device
     if (!actionsByDevices[deviceKey]) {
@@ -40,7 +40,7 @@ function groupActionsByDevice(actions: Array<Action>): Promise<ActionsByDevice> 
   return Promise.resolve(actionsByDevice)
 }
 
-function formatDevice(actions: Array<Action>, device: Device): Promise<string> {
+function formatDevice(actions: Array<InstallAction>, device: Device): Promise<string> {
   return deviceDescription(device)
     .then((description) => {
       const deviceHeader = colors.underline(`Deploy status for device: ${description}`)
