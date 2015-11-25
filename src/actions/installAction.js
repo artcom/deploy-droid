@@ -1,5 +1,6 @@
 /* @flow */
 
+import _ from "lodash"
 import {adb} from "./../setup"
 import {downloadApk} from "./apkDownloader"
 
