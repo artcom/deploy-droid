@@ -12,7 +12,7 @@ import type {Action} from "./actions/types"
 type Device = string
 type ActionsByDevice = {[key: Device]: Array<Action>}
 
-export function printActions(actions: Array<Action>): Promise<string> {
+export function describeActions(actions: Array<Action>): Promise<string> {
   return formatAllDevices(actions)
     .then(makeOneOutput)
 }

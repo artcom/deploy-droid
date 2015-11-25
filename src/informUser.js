@@ -5,12 +5,12 @@ import read from "read"
 import yn from "yn"
 
 import {filterDeployableActions} from "./actions/actionCreator"
-import {printActions} from "./printer"
+import {describeActions} from "./printer"
 
 const readAsync = bluebird.promisify(read)
 
 export function informUser(actions) {
-  return printActions(actions)
+  return describeActions(actions)
     .then((description) => {
       logUpdate(description)
 
