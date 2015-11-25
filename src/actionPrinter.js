@@ -2,67 +2,67 @@
 
 import _ from "lodash"
 import colors from "colors/safe"
-import InstallAction, {apkInstallState, apkDownloadState} from "./actions/installAction"
+import App, {apkInstallState, apkDownloadState} from "./apps/app"
 
-export function createPrintableRow(action: InstallAction): Array<string> {
+export function createPrintableRow(app: App): Array<string> {
   return [
-    apkTitle(action),
-    deployedVersion(action),
-    newVersion(action),
-    apkDownload(action)
+    apkTitle(app),
+    deployedVersion(app),
+    newVersion(app),
+    apkDownload(app)
   ]
 }
 
-function apkTitle(action: InstallAction): string {
-  switch (action.apkInstallState) {
+function apkTitle(app: App): string {
+  switch (app.apkInstallState) {
     case apkInstallState.INSTALLED:
-      return colors.green(action.appConfig.title)
+      return colors.green(app.appConfig.title)
     default:
-      return colors.red(action.appConfig.title)
+      return colors.red(app.appConfig.title)
   }
 }
 
-function deployedVersion(action: InstallAction): string {
-  switch (action.apkInstallState) {
+function deployedVersion(app: App): string {
+  switch (app.apkInstallState) {
     case apkInstallState.NOT_INSTALLED:
       return colors.red("not deployed")
 
     case apkInstallState.NEEDS_UPDATE:
-      const versionName = _.get(action.installedVersion, ["versionName"])
+      const versionName = _.get(app.installedVersion, ["versionName"])
       return versionName ? colors.red(versionName) : "error"
 
     case apkInstallState.INSTALLING:
-      return colors.grey(`installing: ${action.appConfig.shortVersion}`)
+      return colors.grey(`installing: ${app.appConfig.shortVersion}`)
 
     case apkInstallState.INSTALLED:
-      return colors.green(action.appConfig.shortVersion)
+      return colors.green(app.appConfig.shortVersion)
 
     default:
       return ""
   }
 }
 
-function newVersion(action: InstallAction): string {
-  return colors.grey(action.appConfig.shortVersion)
+function newVersion(app: App): string {
+  return colors.grey(app.appConfig.shortVersion)
 }
 
-function apkDownload(action: InstallAction): string {
-  switch (action.apkDownloadState) {
+function apkDownload(app: App): string {
+  switch (app.apkDownloadState) {
     case apkDownloadState.INITIAL:
       return ""
     case apkDownloadState.DOWNLOADING:
-      return colors.grey(`downloading ${getApkDownloadStateProgress(action)}`)
+      return colors.grey(`downloading ${getApkDownloadStateProgress(app)}`)
     case apkDownloadState.DOWNLOADED:
-      return colors.green(`apk location: "${action.apkFilepath}"`)
+      return colors.green(`apk location: "${app.apkFilepath}"`)
     default:
       return ""
   }
 }
 
-function getApkDownloadStateProgress(action: InstallAction): string {
-  if (action.apkDownloadStateProgress.includes("...")) {
-    action.apkDownloadStateProgress = ""
+function getApkDownloadStateProgress(app: App): string {
+  if (app.apkDownloadStateProgress.includes("...")) {
+    app.apkDownloadStateProgress = ""
   }
 
-  return action.apkDownloadStateProgress += "."
+  return app.apkDownloadStateProgress += "."
 }

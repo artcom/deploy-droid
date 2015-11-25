@@ -7,45 +7,45 @@ import table from "text-table"
 import {deviceDescription} from "./setup"
 import {createPrintableRow} from "./actionPrinter"
 
-import InstallAction from "./actions/InstallAction"
+import App from "./apps/App"
 
 type Device = string
-type ActionsByDevice = {[key: Device]: Array<InstallAction>}
+type ActionsByDevice = {[key: Device]: Array<App>}
 
-export function describeActions(actions: Array<InstallAction>): Promise<string> {
-  return formatAllDevices(actions)
+export function describeActions(apps: Array<App>): Promise<string> {
+  return formatAllDevices(apps)
     .then(makeOneOutput)
 }
 
-function formatAllDevices(actions: Array<InstallAction>): Promise<Array<string>> {
-  return groupActionsByDevice(actions)
-    .then((actionsByDevice) => {
-      const formatAllDevices = _.map(actionsByDevice, (actions, device) => {
-        return formatDevice(actions, device)
+function formatAllDevices(apps: Array<App>): Promise<Array<string>> {
+  return groupActionsByDevice(apps)
+    .then((appsByDevice) => {
+      const formatAllDevices = _.map(appsByDevice, (apps, device) => {
+        return formatDevice(apps, device)
       })
       return Promise.all(formatAllDevices)
     })
 }
 
-function groupActionsByDevice(actions: Array<InstallAction>): Promise<ActionsByDevice> {
-  const actionsByDevice = _.reduce(actions, (actionsByDevices, action) => {
-    const deviceKey = action.device
-    if (!actionsByDevices[deviceKey]) {
-      actionsByDevices[deviceKey] = []
+function groupActionsByDevice(apps: Array<App>): Promise<ActionsByDevice> {
+  const appsByDevice = _.reduce(apps, (appsByDevices, app) => {
+    const deviceKey = app.device
+    if (!appsByDevices[deviceKey]) {
+      appsByDevices[deviceKey] = []
     }
 
-    actionsByDevices[deviceKey].push(action)
-    return actionsByDevices
+    appsByDevices[deviceKey].push(app)
+    return appsByDevices
   }, {})
-  return Promise.resolve(actionsByDevice)
+  return Promise.resolve(appsByDevice)
 }
 
-function formatDevice(actions: Array<InstallAction>, device: Device): Promise<string> {
+function formatDevice(apps: Array<App>, device: Device): Promise<string> {
   return deviceDescription(device)
     .then((description) => {
       const deviceHeader = colors.underline(`Deploy status for device: ${description}`)
-      const printableRows = actions.map((action) => {
-        return createPrintableRow(action)
+      const printableRows = apps.map((app) => {
+        return createPrintableRow(app)
       })
       return deviceHeader + "\n" + table(printableRows) + "\n"
     })

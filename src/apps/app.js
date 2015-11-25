@@ -19,7 +19,7 @@ export const apkInstallState = {
   INSTALLED: "installed"
 }
 
-export default class InstallAction {
+export default class App {
 /* jscs:disable disallowSemicolons */
 device: string;
 appConfig: AppConfig;

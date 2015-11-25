@@ -4,31 +4,31 @@ import logUpdate from "log-update"
 import read from "read"
 import yn from "yn"
 
-import {filterDeployableActions} from "./actions/actionCreator"
+import {filterDeployableActions} from "./apps/actionCreator"
 import {describeActions} from "./printer"
 
 const readAsync = bluebird.promisify(read)
 
-export function informUser(actions) {
-  return describeActions(actions)
+export function informUser(apps) {
+  return describeActions(apps)
     .then((description) => {
       logUpdate(description)
 
-      const deployableActions = filterDeployableActions(actions)
+      const deployableActions = filterDeployableActions(apps)
       if (_.isEmpty(deployableActions)) {
         console.log("All Apps up-to-date")
         process.exit()
       } else {
-        return confirmActions(actions)
+        return confirmActions(apps)
       }
     })
 }
 
-function confirmActions(actions) {
+function confirmActions(apps) {
   return readAsync({ prompt: "apply changes (y/N)?" })
     .then((response) => {
       if (yn(response)) {
-        return actions
+        return apps
       }
     })
 }
