@@ -13,7 +13,7 @@ export type AdbDeviceInfo = {
   id: string,
   type: string
 }
-
+/*
 function createDevices(): Promise<Array<Device>> {
   return adb.listDevices()
     .then((devices) => {
@@ -35,8 +35,9 @@ function createDevice({id, type}: AdbDeviceInfo): Promise<Device> {
     return {id, type, description: "unknown"}
   }
 }
+*/
 
-Promise.all([createDevices(), hockeyApp.getAppConfigs()])
+Promise.all([adb.listDevices(), hockeyApp.getAppConfigs()])
   .then(createAllAppsForDevices)
   .then(informUser)
   .then((apps) => {
