@@ -4,20 +4,20 @@ import _ from "lodash"
 import adbkit from "adbkit"
 
 import {adb} from "./../setup"
-import InstallAction from "./installAction"
+import InstallAction, {apkInstallState} from "./installAction"
 
 import type {AppConfig} from "./../hockeyApp/types"
-import type {Action, Device} from "./types"
+import type {Device} from "./types"
 
-export function filterDeployableActions(actions: Array<Action>): Array<InstallAction> {
+export function filterDeployableActions(actions: Array<InstallAction>): Array<InstallAction> {
   return _.reject(actions, (action) => {
-    return action.apkInstallState === "installed"
+    return action.apkInstallState === apkInstallState.INSTALLED
   })
 }
 
 export function createAllActionsForDevices(
   [devices, appConfigs]: [Array<Device>, Array<AppConfig>]
-): Promise<Array<Action>> {
+): Promise<Array<InstallAction>> {
   const createAllActions = devices.map(
     (device) => createActionsForDevice(device, appConfigs)
   )
@@ -29,7 +29,7 @@ export function createAllActionsForDevices(
 function createActionsForDevice(
   device: Device,
   appConfigs: Array<AppConfig>
-): Promise<Array<Action>> {
+): Promise<Array<InstallAction>> {
 
   const createActions = appConfigs.map((appConfig) => createAction(device, appConfig))
   return Promise.all(createActions)
@@ -46,7 +46,7 @@ function createAction(device, appConfig) {
     })
 }
 
-function createActionForInstalledApp(device: Device, appConfig: AppConfig): Promise<Action> {
+function createActionForInstalledApp(device: Device, appConfig: AppConfig): Promise<InstallAction> {
   return getInstalledVersion(device.id, appConfig.bundleIdentifier)
     .then((installedVersion) => {
       if (parseInt(installedVersion.versionCode) < parseInt(appConfig.version)) {

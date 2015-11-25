@@ -12,7 +12,7 @@ const apkDownloadState = {
   DOWNLOADED: "downloaded"
 }
 
-const apkInstallState = {
+export const apkInstallState = {
   NOT_INSTALLED: "notInstalled",
   NEEDS_UPDATE: "needsUpdate",
   INSTALLING: "installing",
