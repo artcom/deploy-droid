@@ -29,7 +29,7 @@ function deployApps(deployableActions) {
 function showProgress(print, promise) {
   const interval = setInterval(function() {
     print().then(logUpdate)
-  }, 50)
+  }, 500)
 
   function stop() {
     clearInterval(interval)
