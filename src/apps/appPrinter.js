@@ -4,6 +4,7 @@ import _ from "lodash"
 import colors from "colors/safe"
 import table from "text-table"
 import App, {apkInstallState, apkDownloadState} from "./app"
+import {simpleDeviceDescription} from "./../devices/devicePrinter"
 
 type AppsByDeviceId = {[key: string]: Array<App>}
 
@@ -29,8 +30,10 @@ function groupAppsByDeviceId(apps: Array<App>): AppsByDeviceId {
 }
 
 function formatApps(apps: Array<App>): string {
+  const deviceDescription = simpleDeviceDescription(apps[0].device)
+
   const deviceHeader = colors.underline(
-    `Deploy status for device: ${apps[0].device.description}`
+    `Deploy status for device: ${deviceDescription}`
   )
   const printableRows = apps.map((app) => {
     return createPrintableRow(app)

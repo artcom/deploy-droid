@@ -2,7 +2,7 @@
 
 import _ from "lodash"
 import adbkit from "adbkit"
-import util from "util"
+import colors from "colors/safe"
 
 import {printDevices} from "./devicePrinter"
 import {adb, deviceDescriptorFile} from "./../setup"
@@ -56,7 +56,7 @@ function trimAll(string: string): string {
 
 function exitOnNoDevices(devices: Array<Device>): Array<Device> {
   if (_.isEmpty(devices)) {
-    console.log("No devices found, Deploy Droid stops.")
+    console.log(colors.red("No devices found, Deploy Droid stops."))
     process.exit()
   }
 

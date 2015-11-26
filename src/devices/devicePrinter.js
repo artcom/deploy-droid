@@ -6,6 +6,10 @@ import table from "text-table"
 
 import type {Device} from "./types"
 
+export function simpleDeviceDescription(device: Device): string {
+  return deviceId(device) + " " + deviceDescription(device)
+}
+
 export function printDevices(devices: Array<Device>): Array<Device> {
   console.log("Devices found:")
   const printableRows = devices.map((device) => {
