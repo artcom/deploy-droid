@@ -1,11 +1,9 @@
 /* @flow */
 
-import _ from "lodash"
 import adbkit from "adbkit"
 import util from "util"
-import table from "text-table"
 
-import {createPrintableRow} from "./devicePrinter"
+import {printDevices} from "./devicePrinter"
 import {adb, deviceDescriptorFile} from "./setup"
 
 export type AdbDeviceInfo = {
@@ -23,21 +21,8 @@ export function getDevices(): Promise<Array<Device>> {
   return createDevices()
     .then((devices) => {
       printDevices(devices)
-      if (devicesOffline(devices)) {
-        console.log("Devices offline")
-      }
-
       return devices
     })
-}
-
-function printDevices(devices: Array<Device>): Array<Device> {
-  console.log("Devices found:")
-  const printableRows = devices.map((device) => {
-    return createPrintableRow(device)
-  })
-  console.log(table(printableRows))
-  return devices
 }
 
 export function createDevices(): Promise<Array<Device>> {
@@ -47,13 +32,6 @@ export function createDevices(): Promise<Array<Device>> {
       const createDevices = devices.map(createDevice)
       return Promise.all(createDevices)
     })
-}
-
-function devicesOffline(devices: Array<Device>): boolean {
-  const offlineDevices = _.filter(devices, (device) => {
-    return device.type === "offline"
-  })
-  return !_.isEmpty(offlineDevices)
 }
 
 function createDevice({id, type}: AdbDeviceInfo): Promise<Device> {
