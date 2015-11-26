@@ -1,6 +1,8 @@
 /* @flow */
 
-import {adb, deviceDescription} from "./setup"
+import adbkit from "adbkit"
+
+import {adb, deviceDescriptorFile} from "./setup"
 import util from "util"
 
 export type AdbDeviceInfo = {
@@ -31,4 +33,28 @@ function createDevice({id, type}: AdbDeviceInfo): Promise<Device> {
   } else {
     return {id, type, description: "unknown"}
   }
+}
+
+export function deviceDescription(deviceId: string): Promise<string> {
+  if (deviceDescriptorFile) {
+    return adbShell(deviceId, `cat ${deviceDescriptorFile}`)
+      .then((output) => {
+        const trimmedOutput = trimAll(output)
+        return deviceId + ", " + trimmedOutput
+      })
+  } else {
+    return Promise.resolve(deviceId)
+  }
+}
+
+function adbShell(deviceId: string, command: string): Promise<string> {
+  return adb.shell(deviceId, command)
+    .then(adbkit.util.readAll)
+    .then(function(output) {
+      return output.toString()
+    })
+}
+
+function trimAll(string: string): string {
+  return string.replace(/(?:\r\n|\r|\n)/g, "<br />")
 }

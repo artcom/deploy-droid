@@ -22,24 +22,4 @@ const options = docopt(doc, {
 
 export const hockeyAppToken = options["--hockeyAppToken"]
 export const customReleaseType = options["--customReleaseType"]
-const deviceDescriptorFile = options["--deviceDescriptorFile"]
-
-export function deviceDescription(deviceId: string): Promise<string> {
-  if (deviceDescriptorFile) {
-    return adbShell(deviceId, `cat ${deviceDescriptorFile}`)
-      .then((output) => {
-        output = output.replace(/(?:\r\n|\r|\n)/g, "<br />")
-        return deviceId + ", " + output
-      })
-  } else {
-    return Promise.resolve(deviceId)
-  }
-}
-
-function adbShell(deviceId: string, command: string): Promise<string> {
-  return adb.shell(deviceId, command)
-    .then(adbkit.util.readAll)
-    .then(function(output) {
-      return output.toString()
-    })
-}
+export const deviceDescriptorFile = options["--deviceDescriptorFile"]
