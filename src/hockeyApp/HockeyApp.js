@@ -3,6 +3,7 @@
 import _ from "lodash"
 import axios from "axios"
 
+import {printAppConfigs} from "./appConfigPrinter"
 import {hockeyAppToken, customReleaseType} from "./../setup"
 import type {
   HockeyAppInfos,
@@ -11,12 +12,13 @@ import type {
   AppConfig
 } from "./types"
 
-const AVAILABLE: number = 2
+const APP_AVAILABLE: number = 2
 
 export function getAppConfigs(): Promise<Array<AppConfig>> {
   return retrieveAllApps()
     .then(selectDeployableApps)
     .then(createAppConfigs)
+    .then(printAppConfigs)
 }
 
 function retrieveAllApps(): Promise<HockeyAppInfos> {
@@ -32,7 +34,7 @@ function retrieveAllApps(): Promise<HockeyAppInfos> {
 function selectDeployableApps(apps: HockeyAppInfos): Array<HockeyAppInfo> {
   return _.select(apps, {
     custom_release_type: customReleaseType,
-    status: AVAILABLE
+    status: APP_AVAILABLE
   })
 }
 
@@ -69,7 +71,7 @@ function retrieveVersion(appInfo: HockeyAppInfo): Promise<HockeyAppVersionInfo> 
 }
 
 function getLatestAvailableVersion(appVersions: Array<HockeyAppVersionInfo>): HockeyAppVersionInfo {
-  const deployableVersions = _.select(appVersions, {status: AVAILABLE})
+  const deployableVersions = _.select(appVersions, {status: APP_AVAILABLE})
   return deployableVersions[0]
 }
 
