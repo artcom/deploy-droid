@@ -6,7 +6,7 @@ import table from "text-table"
 
 import type {Device} from "./types"
 
-export function printDevices(devices: Array<Device>) {
+export function printDevices(devices: Array<Device>): Array<Device> {
   console.log("Devices found:")
   const printableRows = devices.map((device) => {
     return createPrintableRow(device)
@@ -15,7 +15,9 @@ export function printDevices(devices: Array<Device>) {
   if (devicesOffline(devices)) {
     console.log(colors.red("Warning! Some devices offline!"))
   }
+
   console.log("\n")
+  return devices
 }
 
 function createPrintableRow(device: Device): Array<string> {

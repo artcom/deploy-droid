@@ -1,5 +1,6 @@
 /* @flow */
 
+import _ from "lodash"
 import adbkit from "adbkit"
 import util from "util"
 
@@ -10,16 +11,13 @@ import type {Device, AdbDeviceInfo} from "./types"
 
 export function getDevices(): Promise<Array<Device>> {
   return createDevices()
-    .then((devices) => {
-      printDevices(devices)
-      return devices
-    })
+    .then(exitOnNoDevices)
+    .then(printDevices)
 }
 
 export function createDevices(): Promise<Array<Device>> {
   return adb.listDevices()
     .then((devices) => {
-      console.log(util.inspect(devices))
       const createDevices = devices.map(createDevice)
       return Promise.all(createDevices)
     })
@@ -54,4 +52,13 @@ function adbShell(deviceId: string, command: string): Promise<string> {
 
 function trimAll(string: string): string {
   return string.replace(/(?:\r\n|\r|\n)/g, "<br />")
+}
+
+function exitOnNoDevices(devices: Array<Device>): Array<Device> {
+  if (_.isEmpty(devices)) {
+    console.log("No devices found, Deploy Droid stops.")
+    process.exit()
+  }
+
+  return devices
 }
