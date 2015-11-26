@@ -3,7 +3,7 @@
 import _ from "lodash"
 import colors from "colors/safe"
 import table from "text-table"
-import App, {apkInstallState, apkDownloadState} from "./apps/app"
+import App, {apkInstallState, apkDownloadState} from "./app"
 
 type AppsByDeviceId = {[key: string]: Array<App>}
 

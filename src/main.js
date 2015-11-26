@@ -5,7 +5,7 @@ import util from "util"
 import * as hockeyApp from "./hockeyApp/hockeyApp"
 import {createAllAppsForDevices, filterDeployableApps} from "./apps/appCreator"
 import {showDescription} from "./printer"
-import {describeApps} from "./appPrinter"
+import {describeApps} from "./apps/appPrinter"
 import {informUser} from "./informUser"
 import {getDevices} from "./devices/device"
 
