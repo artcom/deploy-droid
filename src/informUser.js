@@ -8,7 +8,7 @@ import yn from "yn"
 
 import App from "./apps/app"
 import {filterDeployableApps} from "./apps/appCreator"
-import {describeApps} from "./printer"
+import {describeApps} from "./appPrinter"
 
 const readAsync = bluebird.promisify(read)
 

@@ -2,9 +2,50 @@
 
 import _ from "lodash"
 import colors from "colors/safe"
+import table from "text-table"
 import App, {apkInstallState, apkDownloadState} from "./apps/app"
 
-export function createPrintableRow(app: App): Array<string> {
+type AppsByDeviceId = {[key: string]: Array<App>}
+
+export function describeApps(apps: Array<App>): string {
+  const appsByDeviceId = groupAppsByDeviceId(apps)
+  const groupedApps =  _.map(appsByDeviceId, (apps) => {
+    return formatApps(apps)
+  })
+  return makeOneOutput(groupedApps)
+}
+
+function groupAppsByDeviceId(apps: Array<App>): AppsByDeviceId {
+  const appsByDevice = _.reduce(apps, (appsByDeviceIds, app) => {
+    const deviceId = app.device.id
+    if (!appsByDeviceIds[deviceId]) {
+      appsByDeviceIds[deviceId] = []
+    }
+
+    appsByDeviceIds[deviceId].push(app)
+    return appsByDeviceIds
+  }, {})
+  return appsByDevice
+}
+
+function formatApps(apps: Array<App>): string {
+  const deviceHeader = colors.underline(
+    `Deploy status for device: ${apps[0].device.description}`
+  )
+  const printableRows = apps.map((app) => {
+    return createPrintableRow(app)
+  })
+  return deviceHeader + "\n" + table(printableRows) + "\n"
+}
+
+function makeOneOutput(stringArray: Array<string>): string {
+  const combinedLines: string = _.reduce(stringArray, (combinedLines, line) => {
+    return combinedLines + line + "\n"
+  }, "")
+  return combinedLines
+}
+
+function createPrintableRow(app: App): Array<string> {
   return [
     apkTitle(app),
     deployedVersion(app),
