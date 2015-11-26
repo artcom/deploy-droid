@@ -1,30 +1,29 @@
+/* @flow */
+
 import _ from "lodash"
 import bluebird from "bluebird"
 import logUpdate from "log-update"
 import read from "read"
 import yn from "yn"
 
+import App from "./apps/app"
 import {filterDeployableApps} from "./apps/appCreator"
 import {describeApps} from "./printer"
 
 const readAsync = bluebird.promisify(read)
 
-export function informUser(apps) {
-  return Promise.resolve(describeApps(apps))
-    .then((description) => {
-      logUpdate(description)
+export function informUser(apps: Array<App>): Array<App> {
+  logUpdate(describeApps(apps))
 
-      const deployableApps = filterDeployableApps(apps)
-      if (_.isEmpty(deployableApps)) {
-        console.log("All Apps up-to-date")
-        process.exit()
-      } else {
-        return confirmApps(apps)
-      }
-    })
+  if (_.isEmpty(filterDeployableApps(apps))) {
+    console.log("All Apps up-to-date")
+    process.exit()
+  }
+
+  return confirmApps(apps)
 }
 
-function confirmApps(apps) {
+function confirmApps(apps: Array<App>): Array<App> {
   return readAsync({ prompt: "apply changes (y/N)?" })
     .then((response) => {
       if (yn(response)) {
