@@ -7,7 +7,7 @@ import {adb} from "./../setup"
 import App, {apkInstallState} from "./app"
 
 import type {AppConfig} from "./../hockeyApp/types"
-import type {Device} from "./../device"
+import type {Device} from "./../devices/types"
 
 export function filterDeployableApps(apps: Array<App>): Array<App> {
   return _.reject(apps, (app) => {

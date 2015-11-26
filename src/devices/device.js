@@ -4,18 +4,9 @@ import adbkit from "adbkit"
 import util from "util"
 
 import {printDevices} from "./devicePrinter"
-import {adb, deviceDescriptorFile} from "./setup"
+import {adb, deviceDescriptorFile} from "./../setup"
 
-export type AdbDeviceInfo = {
-  id: string,
-  type: string
-}
-
-export type Device = {
-  id: string,
-  type: string,
-  description: string
-}
+import type {Device, AdbDeviceInfo} from "./types"
 
 export function getDevices(): Promise<Array<Device>> {
   return createDevices()

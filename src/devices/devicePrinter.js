@@ -4,7 +4,7 @@ import _ from "lodash"
 import colors from "colors/safe"
 import table from "text-table"
 
-import type {Device} from "./device"
+import type {Device} from "./types"
 
 export function printDevices(devices: Array<Device>) {
   console.log("Devices found:")
@@ -15,6 +15,7 @@ export function printDevices(devices: Array<Device>) {
   if (devicesOffline(devices)) {
     console.log(colors.red("Warning! Some devices offline!"))
   }
+  console.log("\n")
 }
 
 function createPrintableRow(device: Device): Array<string> {
