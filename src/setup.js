@@ -11,7 +11,7 @@ const doc = `
   Usage:
     deploydroid
       --hockeyAppToken=<token>
-      --customReleaseType=<type>
+      --releaseType=<type>
       [--deviceDescriptorFile=<filepath>]
 `
 
@@ -21,5 +21,5 @@ const options = docopt(doc, {
 })
 
 export const hockeyAppToken = options["--hockeyAppToken"]
-export const customReleaseType = options["--customReleaseType"]
+export const releaseType = options["--releaseType"]
 export const deviceDescriptorFile = options["--deviceDescriptorFile"]

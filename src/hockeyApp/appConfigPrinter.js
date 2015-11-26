@@ -3,11 +3,11 @@
 import colors from "colors/safe"
 import table from "text-table"
 import type {AppConfig} from "./types"
-import {customReleaseType} from "./../setup"
+import {releaseType} from "./../setup"
 
 export function printAppConfigs(appConfigs: Array<AppConfig>): Array<AppConfig> {
   const header  =
-    colors.underline(`AppConfigs retrieved from HockeyApp for release type: ${customReleaseType}`)
+    colors.underline(`AppConfigs retrieved from HockeyApp for release type: ${releaseType}`)
 
   const printableRows = appConfigs.map((appConfig) => {
     return createPrintableRow(appConfig)

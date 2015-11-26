@@ -5,7 +5,7 @@ import axios from "axios"
 import colors from "colors/safe"
 
 import {printAppConfigs} from "./appConfigPrinter"
-import {hockeyAppToken, customReleaseType} from "./../setup"
+import {hockeyAppToken, releaseType} from "./../setup"
 import type {
   HockeyAppInfos,
   HockeyAppInfo,
@@ -35,7 +35,7 @@ function retrieveAllApps(): Promise<HockeyAppInfos> {
 
 function selectDeployableApps(apps: HockeyAppInfos): Array<HockeyAppInfo> {
   return _.select(apps, {
-    custom_release_type: customReleaseType,
+    custom_release_type: releaseType,
     status: APP_AVAILABLE
   })
 }
@@ -80,7 +80,7 @@ function getLatestAvailableVersion(appVersions: Array<HockeyAppVersionInfo>): Ho
 function exitOnNoAppConfigs(appConfigs: Array<AppConfig>): Array<AppConfig> {
   if (_.isEmpty(appConfigs)) {
     console.log(colors.red(
-      `No AppConfigs found for release type: "${customReleaseType}", Deploy Droid stops.`))
+      `No AppConfigs found for release type: "${releaseType}", Deploy Droid stops.`))
     process.exit()
   }
 
