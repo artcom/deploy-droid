@@ -6,9 +6,9 @@ import * as hockeyApp from "./hockeyApp/hockeyApp"
 import {createAllAppsForDevices, filterDeployableApps} from "./apps/appCreator"
 import {showDescription, describeApps} from "./printer"
 import {informUser} from "./informUser"
-import {createDevices} from "./device"
+import {getDevices} from "./device"
 
-Promise.all([createDevices(), hockeyApp.getAppConfigs()])
+Promise.all([getDevices(), hockeyApp.getAppConfigs()])
   .then(createAllAppsForDevices)
   .then(informUser)
   .then((apps) => {

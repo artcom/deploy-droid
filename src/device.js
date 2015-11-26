@@ -2,9 +2,11 @@
 
 import _ from "lodash"
 import adbkit from "adbkit"
-
-import {adb, deviceDescriptorFile} from "./setup"
 import util from "util"
+import table from "text-table"
+
+import {createPrintableRow} from "./devicePrinter"
+import {adb, deviceDescriptorFile} from "./setup"
 
 export type AdbDeviceInfo = {
   id: string,
@@ -29,8 +31,12 @@ export function getDevices(): Promise<Array<Device>> {
     })
 }
 
-function printDevices(devices: any): any {
+function printDevices(devices: Array<Device>): Array<Device> {
   console.log("Devices found:")
+  const printableRows = devices.map((device) => {
+    return createPrintableRow(device)
+  })
+  console.log(table(printableRows))
   return devices
 }
 
@@ -63,10 +69,7 @@ function createDevice({id, type}: AdbDeviceInfo): Promise<Device> {
 export function deviceDescription(deviceId: string): Promise<string> {
   if (deviceDescriptorFile) {
     return adbShell(deviceId, `cat ${deviceDescriptorFile}`)
-      .then((output) => {
-        const trimmedOutput = trimAll(output)
-        return deviceId + ", " + trimmedOutput
-      })
+      .then(trimAll)
   } else {
     return Promise.resolve(deviceId)
   }
