@@ -1,5 +1,6 @@
 /* @flow */
 
+import _ from "lodash"
 import adbkit from "adbkit"
 
 import {adb, deviceDescriptorFile} from "./setup"
@@ -16,6 +17,23 @@ export type Device = {
   description: string
 }
 
+export function getDevices(): Promise<Array<Device>> {
+  return createDevices()
+    .then((devices) => {
+      printDevices(devices)
+      if (devicesOffline(devices)) {
+        console.log("Devices offline")
+      }
+
+      return devices
+    })
+}
+
+function printDevices(devices: any): any {
+  console.log("Devices found:")
+  return devices
+}
+
 export function createDevices(): Promise<Array<Device>> {
   return adb.listDevices()
     .then((devices) => {
@@ -25,13 +43,20 @@ export function createDevices(): Promise<Array<Device>> {
     })
 }
 
+function devicesOffline(devices: Array<Device>): boolean {
+  const offlineDevices = _.filter(devices, (device) => {
+    return device.type === "offline"
+  })
+  return !_.isEmpty(offlineDevices)
+}
+
 function createDevice({id, type}: AdbDeviceInfo): Promise<Device> {
   if (type !== "offline") {
     return deviceDescription(id).then((deviceDescription) => {
       return {id, type, description: deviceDescription}
     })
   } else {
-    return {id, type, description: "unknown"}
+    return Promise.resolve({id, type, description: "unknown"})
   }
 }
 
