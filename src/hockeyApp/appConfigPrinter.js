@@ -7,7 +7,7 @@ import {releaseType} from "./../setup"
 
 export function printAppConfigs(appConfigs: Array<AppConfig>): Array<AppConfig> {
   const header  =
-    colors.underline(`AppConfigs retrieved from HockeyApp for release type: ${releaseType}`)
+    colors.underline(`Android AppConfigs found for release type: ${releaseType}`)
 
   const printableRows = appConfigs.map((appConfig) => {
     return createPrintableRow(appConfig)

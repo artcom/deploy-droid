@@ -11,16 +11,15 @@ export function simpleDeviceDescription(device: Device): string {
 }
 
 export function printDevices(devices: Array<Device>): Array<Device> {
-  console.log("Devices found:")
+  let header = colors.underline("Devices found:")
+  if (devicesOffline(devices)) {
+    header += (colors.underline.red(" ( Warning! Some devices offline )"))
+  }
+
   const printableRows = devices.map((device) => {
     return createPrintableRow(device)
   })
-  console.log(table(printableRows))
-  if (devicesOffline(devices)) {
-    console.log(colors.red("Warning! Some devices offline!"))
-  }
-
-  console.log("\n")
+  console.log(header + "\n" + table(printableRows) + "\n")
   return devices
 }
 
