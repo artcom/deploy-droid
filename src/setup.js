@@ -21,5 +21,5 @@ const options = docopt(doc, {
 })
 
 export const hockeyAppToken = options["--hockeyAppToken"]
-export const releaseType = options["--releaseType"] || "beta"
+export const releaseType = options["--releaseType"] || "beta"
 export const deviceDescriptorFile = options["--deviceDescriptorFile"]
