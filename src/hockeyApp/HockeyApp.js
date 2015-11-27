@@ -14,6 +14,12 @@ import type {
 } from "./types"
 
 const APP_AVAILABLE: number = 2
+const STANDARD_RELEASE_TYPE = {
+  alpha: 2,
+  beta: 0,
+  store: 1,
+  enterprise: 3
+}
 
 export function getAppConfigs(): Promise<Array<AppConfig>> {
   return retrieveAllApps()
@@ -34,10 +40,15 @@ function retrieveAllApps(): Promise<HockeyAppInfos> {
 }
 
 function selectDeployableApps(apps: HockeyAppInfos): Array<HockeyAppInfo> {
-  return _.select(apps, {
-    custom_release_type: releaseType,
-    status: APP_AVAILABLE
-  })
+  let filter = { platform: "Android", custom_release_type: releaseType, status: APP_AVAILABLE }
+
+  if (_.has(STANDARD_RELEASE_TYPE, releaseType)) {
+    delete filter.custom_release_type
+    _.set(filter, "release_type", _.get(STANDARD_RELEASE_TYPE, releaseType))
+  }
+
+  const filtered =  _.select(apps, filter)
+  return filtered
 }
 
 function createAppConfigs(deployableApps: HockeyAppInfos): Promise<Array<AppConfig>> {
