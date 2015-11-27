@@ -4,6 +4,8 @@ import adbkit from "adbkit"
 import bunyan from "bunyan"
 import {docopt} from "docopt"
 
+import packageJson from "./../package.json"
+
 export const log = bunyan.createLogger({ name: "deploy-droid" })
 export const adb = adbkit.createClient()
 
@@ -17,7 +19,7 @@ const doc = `
 
 const options = docopt(doc, {
   help: true,
-  version: "0.0.1"
+  version: packageJson.version
 })
 
 export const hockeyAppToken = options["--hockeyAppToken"]
