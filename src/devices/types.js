@@ -1,3 +1,5 @@
+/* @flow */
+
 export type AdbDeviceInfo = {
   id: string,
   type: string
