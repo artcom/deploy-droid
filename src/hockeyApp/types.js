@@ -1,3 +1,4 @@
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 /* @flow */
 
 export type HockeyAppInfos = Array<HockeyAppInfo>

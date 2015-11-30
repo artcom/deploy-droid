@@ -6,7 +6,7 @@
   "disallowTrailingComma": true,
   "validateQuoteMarks": "\"",
   "maximumLineLength": 100,
-  "requireCamelCaseOrUpperCaseIdentifiers": false,
+  "requireCamelCaseOrUpperCaseIdentifiers": true,
   "requirePaddingNewLinesAfterBlocks": {
     "allExcept": ["inCallExpressions"]
   }

@@ -15,7 +15,7 @@ const doc = `
 
 const options = docopt(doc, {
   help: true,
-  version: process.env.npm_package_version
+  version: process.env.npm_package_version // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 })
 
 export const hockeyAppToken = options["--hockeyAppToken"]
