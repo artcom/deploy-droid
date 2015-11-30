@@ -4,7 +4,7 @@
 
 ```bash
 npm install
-npm start -- --hockeyAppToken=<token> | bunyan
+npm start -- --hockeyAppToken=<token>
 ```
 
 ## Deployment

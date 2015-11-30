@@ -1,10 +1,8 @@
 /* @flow */
 
 import adbkit from "adbkit"
-import bunyan from "bunyan"
 import {docopt} from "docopt"
 
-export const log = bunyan.createLogger({ name: "deploy-droid" })
 export const adb = adbkit.createClient()
 
 const doc = `
