@@ -13,7 +13,8 @@ export type HockeyAppInfo = {
 export type HockeyAppVersionInfo = {
   shortversion: string,
   version: string,
-  build_url: string
+  build_url: string,
+  appsize: number
 }
 
 export type AppConfig = {
@@ -22,5 +23,6 @@ export type AppConfig = {
   publicIdentifier: string,
   shortVersion: string,
   version: string,
-  buildUrl: string
+  buildUrl: string,
+  appSize: number
 }

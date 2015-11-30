@@ -64,7 +64,8 @@ function createAppConfig(appInfo: HockeyAppInfo): Promise<AppConfig> {
       publicIdentifier: appInfo.public_identifier,
       shortVersion: latestAvailableVersion.shortversion,
       version: latestAvailableVersion.version,
-      buildUrl: latestAvailableVersion.build_url
+      buildUrl: latestAvailableVersion.build_url,
+      appSize: latestAvailableVersion.appsize
     }
   })
 }

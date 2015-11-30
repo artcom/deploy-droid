@@ -2,7 +2,7 @@
 
 import _ from "lodash"
 import {adb} from "./../setup"
-import {downloadApk} from "./apkDownloader"
+import {getApk} from "./apkDownloader"
 
 import type {AppConfig} from "./../hockeyApp/types"
 import type {Device} from "./../devices/types"
@@ -73,7 +73,7 @@ constructor(
 
   startApkDownload() {
     this.apkDownloadState = apkDownloadState.DOWNLOADING
-    return downloadApk(this.appConfig)
+    return getApk(this.appConfig)
       .then((filepath) => {
         this.apkFilepath = filepath
         this.apkDownloadState = apkDownloadState.DOWNLOADED

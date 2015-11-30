@@ -13,7 +13,7 @@ const statAsync = bluebird.promisify(fs.stat)
 const cacheDir = createCacheDir("apk-cache")
 const apkDownloadCache = {}
 
-export function downloadApk(appConfig: AppConfig): Promise<string> {
+export function getApk(appConfig: AppConfig): Promise<string> {
   const buildUrl = appConfig.buildUrl
   if (apkDownloadCache[buildUrl]) {
     return apkDownloadCache[buildUrl]
@@ -24,17 +24,19 @@ export function downloadApk(appConfig: AppConfig): Promise<string> {
 }
 
 function createDownloadPromise(appConfig: AppConfig): Promise<string> {
-  const file = getFilepath(appConfig)
+  const apk = getFilepath(appConfig)
 
-  return statAsync(file)
-    .then(() => {
-      return file
+  return statAsync(apk)
+    .then((apkStat) => {
+      if (isApkSizeCorrect(apkStat, appConfig)) {
+        return apk
+      } else {
+        fs.unlinkSync(apk)
+        throw new Error(`Apk file "${apk}" is invalid, deleted invalid apk file.`)
+      }
     })
     .catch(() => {
-      return wgetAsync({url: appConfig.buildUrl, dest: file})
-       .then((response) => {
-         return response.filepath
-       })
+      return downloadApk(appConfig.buildUrl, apk)
     })
 }
 
@@ -42,6 +44,17 @@ function getFilepath(appConfig: AppConfig): string {
   const filepath = cacheDir + "/" +
     appConfig.bundleIdentifier + "-" + appConfig.shortVersion + ".apk"
   return filepath
+}
+
+function isApkSizeCorrect(apkStat: any, appConfig: AppConfig): boolean {
+  return apkStat.size === appConfig.appSize
+}
+
+function downloadApk(url:string, dest:string): Promise<string> {
+  return wgetAsync({url, dest})
+   .then((response) => {
+     return response.filepath
+   })
 }
 
 function createCacheDir(dirName: string): string {
