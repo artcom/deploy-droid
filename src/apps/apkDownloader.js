@@ -1,12 +1,21 @@
 /* @flow */
 
-import fs from "fs"
-import wget from "wgetjs"
 import bluebird from "bluebird"
+import fs from "fs"
+import path from "path"
+import wget from "wgetjs"
+
 import type {AppConfig} from "./../hockeyApp/types"
 
 const wgetAsync = bluebird.promisify(wget)
 const statAsync = bluebird.promisify(fs.stat)
+
+const cacheDir = path.resolve("apk-cache")
+try {
+  fs.mkdirSync(cacheDir)
+} catch (ex) {
+  //ignore that dir already exists
+}
 
 const apkDownloadCache = {}
 
@@ -36,7 +45,7 @@ function createDownloadPromise(appConfig: AppConfig): Promise<string> {
 }
 
 function getFilepath(appConfig: AppConfig): string {
-  //const localPath = path.resolve(cacheDir, name)
-
-  return "/tmp/" + appConfig.bundleIdentifier + "_" + appConfig.shortVersion + ".apk"
+  const filepath = cacheDir + "/" +
+    appConfig.bundleIdentifier + "-" + appConfig.shortVersion + ".apk"
+  return filepath
 }
