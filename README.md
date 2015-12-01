@@ -15,7 +15,7 @@ Automated mobile device deployment for [HockeyApp](http://hockeyapp.net/) distri
 
 ## Usage
 
-```bash
+```
 $ deploy-droid --help
 Usage:
   deploy-droid --hockeyAppToken=<token> [--releaseType=<type>] [--deviceDescriptorFile=<filepath>]
