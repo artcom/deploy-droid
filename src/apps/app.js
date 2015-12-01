@@ -1,6 +1,7 @@
 /* @flow */
 
 import _ from "lodash"
+
 import {adb} from "./../setup"
 import {getApk} from "./apkDownloader"
 
@@ -83,7 +84,10 @@ constructor(
 
   installApk(filepath: string) {
     this.apkInstallState = apkInstallState.INSTALLING
-    return adb.install(this.device.id, filepath)
+    return adb.uninstall(this.device.id, this.appConfig.bundleIdentifier)
+      .then(() => {
+        return adb.install(this.device.id, filepath)
+      })
       .then(() => {
         this.apkInstallState = apkInstallState.INSTALLED
       })
