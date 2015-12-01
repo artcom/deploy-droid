@@ -38,7 +38,7 @@ export function deviceDescription(deviceId: string): Promise<string> {
     return adbShell(deviceId, `cat ${deviceDescriptorFile}`)
       .then(trimAll)
   } else {
-    return Promise.resolve(deviceId)
+    return Promise.resolve("unknown description")
   }
 }
 
