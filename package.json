@@ -1,6 +1,6 @@
 {
   "name": "deploy-droid",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Automated deployment for HockeyApp Android applications",
   "repository": "artcom/deploy-droid",
   "files": [
