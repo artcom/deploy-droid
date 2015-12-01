@@ -6,11 +6,16 @@ import {docopt} from "docopt"
 export const adb = adbkit.createClient()
 
 const doc = `
-  Usage:
-    deploydroid
-      --hockeyAppToken=<token>
-      [--releaseType=<type>]
-      [--deviceDescriptorFile=<filepath>]
+Usage:
+  deploy-droid --hockeyAppToken=<token> [--releaseType=<type>] [--deviceDescriptorFile=<filepath>]
+  deploy-droid --version
+  deploy-droid --help
+
+Options:
+  --releaseType=<type>                HockeyApp release type [default: beta],
+                                      (alpha|beta|store|enterprise|<custom type>).
+  --deviceDescriptorFile=<filepath>   Filepath to a human readable file
+                                      on connected android devices, which describes that device.
 `
 
 const options = docopt(doc, {
