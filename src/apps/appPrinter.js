@@ -6,27 +6,12 @@ import table from "text-table"
 import App, {apkInstallState, apkDownloadState} from "./app"
 import {simpleDeviceDescription} from "./../devices/devicePrinter"
 
-type AppsByDeviceId = {[key: string]: Array<App>}
-
 export function describeApps(apps: Array<App>): string {
-  const appsByDeviceId = groupAppsByDeviceId(apps)
+  const appsByDeviceId = _.groupBy(apps, "device.id")
   const groupedApps =  _.map(appsByDeviceId, (apps) => {
     return formatApps(apps)
   })
   return makeOneOutput(groupedApps)
-}
-
-function groupAppsByDeviceId(apps: Array<App>): AppsByDeviceId {
-  const appsByDevice = _.reduce(apps, (appsByDeviceIds, app) => {
-    const deviceId = app.device.id
-    if (!appsByDeviceIds[deviceId]) {
-      appsByDeviceIds[deviceId] = []
-    }
-
-    appsByDeviceIds[deviceId].push(app)
-    return appsByDeviceIds
-  }, {})
-  return appsByDevice
 }
 
 function formatApps(apps: Array<App>): string {
