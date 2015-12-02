@@ -21,9 +21,7 @@ export function createAllAppsForDevices(
   const createAllApps = devices.map(
     (device) => createAppsForDevice(device, appConfigs)
   )
-  return Promise.all(createAllApps).then((results) => {
-    return _.flatten(results)
-  })
+  return Promise.all(createAllApps).then(_.flatten)
 }
 
 function createAppsForDevice(
