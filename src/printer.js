@@ -2,7 +2,7 @@
 
 import logUpdate from "log-update"
 
-export function showDescription(describe: Function, promise: Promise): Promise {
+export function showDescription(describe: () => string, promise: Promise): Promise {
   const interval = setInterval(function() {
     logUpdate(describe())
   }, 500)
