@@ -1,6 +1,6 @@
 # Deploy Droid
 
-Automated mobile device deployment for [HockeyApp](http://hockeyapp.net/) distributed Android applications
+Automated installation of Android applications from [HockeyApp](http://hockeyapp.net/)
 
 ## Requirements
 
@@ -33,6 +33,6 @@ Deploy Droid downloads and installs Android applications which are distributed v
 
 Which applications are installed is determined by their release types. The release type for each application can be specified in the HockeyApp web interface. If a custom type is chosen for an application it takes precedence over the standard release types.
 
-Always the latest version available is installed to connected Android devices. The user is prompted to confirm the installation.
+The latest available version is installed to connected Android devices. The user is prompted to confirm the installation.
 
-The applications are downloaded to a directory named apk-cache which is created within the executing directory.
+The applications are downloaded to a directory named apk-cache which is created within the current working directory.
