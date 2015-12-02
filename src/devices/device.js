@@ -24,22 +24,20 @@ function createDevices(): Promise<Array<Device>> {
 }
 
 function createDevice({id, type}: AdbDeviceInfo): Promise<Device> {
-  if (type !== "offline") {
-    return deviceDescription(id).then((deviceDescription) => {
-      return {id, type, description: deviceDescription}
-    })
+  if (deviceDescriptorFile && type !== "offline") {
+    return deviceDescription(id)
+      .then((deviceDescription) => {
+        return {id, type, description: deviceDescription}
+      })
   } else {
-    return Promise.resolve({id, type, description: "unknown"})
+    return Promise.resolve({id, type})
   }
 }
 
 export function deviceDescription(deviceId: string): Promise<string> {
-  if (deviceDescriptorFile) {
-    return adbShell(deviceId, `cat ${deviceDescriptorFile}`)
-      .then(trimAll)
-  } else {
-    return Promise.resolve("unknown description")
-  }
+  return adbShell(deviceId, `cat ${deviceDescriptorFile}`)
+    .then(trimAll)
+    .catch(() => "description not found")
 }
 
 function adbShell(deviceId: string, command: string): Promise<string> {
@@ -51,7 +49,7 @@ function adbShell(deviceId: string, command: string): Promise<string> {
 }
 
 function trimAll(string: string): string {
-  return string.replace(/(?:\r\n|\r|\n)/g, "<br />")
+  return _.trim(string, " \t\r\n")
 }
 
 function exitOnNoDevices(devices: Array<Device>): Array<Device> {

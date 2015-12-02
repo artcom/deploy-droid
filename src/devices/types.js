@@ -2,11 +2,9 @@
 
 export type AdbDeviceInfo = {
   id: string,
-  type: string
+  type: "offline" | "device" | "emulator"
 }
 
-export type Device = {
-  id: string,
-  type: string,
-  description: string
+export type Device = AdbDeviceInfo & {
+  description?: string
 }

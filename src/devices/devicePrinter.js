@@ -1,6 +1,5 @@
 /* @flow */
 
-import _ from "lodash"
 import colors from "colors/safe"
 import table from "text-table"
 
@@ -19,6 +18,7 @@ export function printDevices(devices: Array<Device>): Array<Device> {
   const printableRows = devices.map((device) => {
     return createPrintableRow(device)
   })
+
   console.log(header + "\n" + table(printableRows) + "\n")
   return devices
 }
@@ -40,7 +40,7 @@ function deviceId(device: Device): string {
 }
 
 function deviceDescription(device: Device): string {
-  return device.description
+  return device.description || ""
 }
 
 function deviceType(device: Device): string {
@@ -52,8 +52,5 @@ function deviceType(device: Device): string {
 }
 
 function devicesOffline(devices: Array<Device>): boolean {
-  const offlineDevices = _.filter(devices, (device) => {
-    return device.type === "offline"
-  })
-  return !_.isEmpty(offlineDevices)
+  return devices.some((device) => device.type === "offline")
 }
