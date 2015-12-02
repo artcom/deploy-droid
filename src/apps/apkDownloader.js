@@ -15,12 +15,12 @@ const apkDownloadCache = {}
 
 export function getApk(appConfig: AppConfig): Promise<string> {
   const buildUrl = appConfig.buildUrl
-  if (apkDownloadCache[buildUrl]) {
-    return apkDownloadCache[buildUrl]
-  } else {
+
+  if (!apkDownloadCache[buildUrl]) {
     apkDownloadCache[buildUrl] = createDownloadPromise(appConfig)
-    return apkDownloadCache[buildUrl]
   }
+
+  return apkDownloadCache[buildUrl]
 }
 
 function createDownloadPromise(appConfig: AppConfig): Promise<string> {
@@ -41,9 +41,7 @@ function createDownloadPromise(appConfig: AppConfig): Promise<string> {
 }
 
 function getFilepath(appConfig: AppConfig): string {
-  const filepath = cacheDir + "/" +
-    appConfig.bundleIdentifier + "-" + appConfig.shortVersion + ".apk"
-  return filepath
+  return `${cacheDir}/${appConfig.bundleIdentifier}-${appConfig.shortVersion}.apk`
 }
 
 function isApkSizeCorrect(apkStat: any, appConfig: AppConfig): boolean {
