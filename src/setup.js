@@ -2,6 +2,7 @@
 
 import adbkit from "adbkit"
 import {docopt} from "docopt"
+import {version} from "../package.json"
 
 export const adb = adbkit.createClient()
 
@@ -20,7 +21,7 @@ Options:
 
 const options = docopt(doc, {
   help: true,
-  version: process.env.npm_package_version // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+  version
 })
 
 export const hockeyAppToken = options["--hockeyAppToken"]
