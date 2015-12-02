@@ -2,6 +2,7 @@
 
 [include]
 ./src
+package.json
 
 [libs]
 
