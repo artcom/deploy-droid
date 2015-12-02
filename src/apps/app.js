@@ -28,7 +28,6 @@ appConfig: AppConfig;
 installedVersion: ?{versionCode:string, versionName:string};
 apkDownloadState: string;
 apkDownloadStateProgress: string;
-apkFilepath: string;
 apkInstallState: string;
 /* jscs:enable disallowSemicolons */
 
@@ -45,7 +44,6 @@ constructor(
 
   this.apkDownloadState = apkDownloadState.INITIAL
   this.apkDownloadStateProgress = ""
-  this.apkFilepath = "unknown"
 }
 
   determineApkInstallState(): string {
@@ -76,7 +74,6 @@ constructor(
     this.apkDownloadState = apkDownloadState.DOWNLOADING
     return getApk(this.appConfig)
       .then((filepath) => {
-        this.apkFilepath = filepath
         this.apkDownloadState = apkDownloadState.DOWNLOADED
         return filepath
       })
@@ -85,9 +82,7 @@ constructor(
   installApk(filepath: string) {
     this.apkInstallState = apkInstallState.INSTALLING
     return adb.uninstall(this.device.id, this.appConfig.bundleIdentifier)
-      .then(() => {
-        return adb.install(this.device.id, filepath)
-      })
+      .then(() => adb.install(this.device.id, filepath))
       .then(() => {
         this.apkInstallState = apkInstallState.INSTALLED
       })

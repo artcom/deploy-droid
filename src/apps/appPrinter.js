@@ -97,7 +97,7 @@ function apkDownload(app: App): string {
     case apkDownloadState.DOWNLOADING:
       return colors.grey(`downloading ${getApkDownloadStateProgress(app)}`)
     case apkDownloadState.DOWNLOADED:
-      return colors.green(`apk location: "${app.apkFilepath}"`)
+      return colors.green("downloaded")
     default:
       return ""
   }
