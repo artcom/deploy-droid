@@ -15,7 +15,7 @@ export function getDevices(): Promise<Array<Device>> {
     .then(printDevices)
 }
 
-export function createDevices(): Promise<Array<Device>> {
+function createDevices(): Promise<Array<Device>> {
   return adb.listDevices()
     .then((devices) => {
       const createDevices = devices.map(createDevice)
