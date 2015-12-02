@@ -59,8 +59,8 @@ constructor(
   }
 
   needsUpdate(): boolean {
-    const str = _.get(this.installedVersion, "versionCode", -1)
-    return parseInt(this.appConfig.version) > parseInt(str)
+    const versionCode = _.get(this.installedVersion, "versionCode", "-1")
+    return parseInt(this.appConfig.version) > parseInt(versionCode)
   }
 
   deploy() {
