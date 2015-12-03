@@ -28,8 +28,7 @@ export function printDevices(devices: Array<Device>): Array<Device> {
 function createPrintableRow(device: Device): Array<string> {
   return [
     deviceId(device),
-    deviceDescription(device),
-    deviceType(device)
+    deviceDescription(device)
   ]
 }
 
@@ -42,17 +41,13 @@ function deviceId(device: Device): string {
 }
 
 function deviceDescription(device: Device): string {
-  return device.description || ""
-}
-
-function deviceType(device: Device): string {
   switch (device.type) {
     case "offline":
       return colors.red("OFFLINE - ignoring")
     case "unauthorized":
       return colors.red("UNAUTHORIZED - ignoring")
     default:
-      return ""
+      return device.description || ""
   }
 }
 
