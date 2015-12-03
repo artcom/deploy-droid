@@ -88,10 +88,19 @@ function apkDownload(app: App): string {
   }
 }
 
+const dowloadProgressMap = {}
 function getApkDownloadStateProgress(app: App): string {
-  if (app.apkDownloadStateProgress.includes("...")) {
-    app.apkDownloadStateProgress = ""
+  let progress = dowloadProgressMap[app.appConfig.bundleIdentifier]
+  if (!progress) {
+    progress = "."
+  } else {
+    progress += "."
   }
 
-  return app.apkDownloadStateProgress += "."
+  if (progress.includes("....")) {
+    progress = ""
+  }
+
+  dowloadProgressMap[app.appConfig.bundleIdentifier] = progress
+  return progress
 }

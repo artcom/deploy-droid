@@ -27,7 +27,6 @@ device: Device;
 appConfig: AppConfig;
 installedVersion: ?{versionCode:string, versionName:string};
 apkDownloadState: string;
-apkDownloadStateProgress: string;
 apkInstallState: string;
 /* jscs:enable disallowSemicolons */
 
@@ -43,7 +42,6 @@ constructor(
   this.apkInstallState = this.determineApkInstallState()
 
   this.apkDownloadState = apkDownloadState.INITIAL
-  this.apkDownloadStateProgress = ""
 }
 
   determineApkInstallState(): string {
