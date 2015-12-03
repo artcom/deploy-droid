@@ -4,7 +4,7 @@ import _ from "lodash"
 import colors from "colors/safe"
 import table from "text-table"
 
-import App, {apkInstallState, apkDownloadState} from "./app"
+import App, {apkInstallState, apkDownloadState} from "./index"
 import {simpleDeviceDescription} from "./../device/printer"
 
 export function describeApps(apps: Array<App>): string {

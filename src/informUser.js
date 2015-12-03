@@ -7,9 +7,9 @@ import logUpdate from "log-update"
 import read from "read"
 import yn from "yn"
 
-import App from "./apps/app"
-import {filterDeployableApps} from "./apps/appCreator"
-import {describeApps} from "./apps/appPrinter"
+import App from "./app"
+import {filterDeployableApps} from "./app/creator"
+import {describeApps} from "./app/printer"
 
 const readAsync = bluebird.promisify(read)
 

@@ -4,7 +4,7 @@ import _ from "lodash"
 import adbkit from "adbkit"
 
 import {adb} from "./../setup"
-import App, {apkInstallState} from "./app"
+import App, {apkInstallState} from "./index"
 
 import type {AppConfig} from "./../hockeyApp/types"
 import type {Device} from "./../device/types"
