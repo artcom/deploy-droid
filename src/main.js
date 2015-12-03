@@ -8,7 +8,7 @@ import {createAllAppsForDevices, filterDeployableApps} from "./apps/appCreator"
 import {showDescription} from "./printer"
 import {describeApps} from "./apps/appPrinter"
 import {informUser} from "./informUser"
-import {getDevices} from "./devices/device"
+import {getDevices} from "./device"
 
 Promise.all([getDevices(), hockeyApp.getAppConfigs()])
   .then(createAllAppsForDevices)

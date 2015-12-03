@@ -4,7 +4,7 @@ import _ from "lodash"
 import adbkit from "adbkit"
 import colors from "colors/safe"
 
-import {printDevices} from "./devicePrinter"
+import {printDevices} from "./printer"
 import {adb, deviceDescriptorFile} from "./../setup"
 
 import type {Device, AdbDeviceInfo} from "./types"

@@ -7,6 +7,7 @@ import colors from "colors/safe"
 
 import {printAppConfigs} from "./appConfigPrinter"
 import {hockeyAppToken, releaseType} from "./../setup"
+
 import type {
   HockeyAppInfos,
   HockeyAppInfo,

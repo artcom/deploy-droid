@@ -3,8 +3,9 @@
 import _ from "lodash"
 import colors from "colors/safe"
 import table from "text-table"
+
 import App, {apkInstallState, apkDownloadState} from "./app"
-import {simpleDeviceDescription} from "./../devices/devicePrinter"
+import {simpleDeviceDescription} from "./../device/printer"
 
 export function describeApps(apps: Array<App>): string {
   const appsByDeviceId = _.groupBy(apps, "device.id")

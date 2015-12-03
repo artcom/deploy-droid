@@ -6,7 +6,7 @@ import {adb} from "./../setup"
 import {getApk} from "./apkDownloader"
 
 import type {AppConfig} from "./../hockeyApp/types"
-import type {Device} from "./../devices/types"
+import type {Device} from "./../device/types"
 
 export const apkDownloadState = {
   INITIAL: "initial",
