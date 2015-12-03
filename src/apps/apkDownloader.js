@@ -26,18 +26,16 @@ export function getApk(appConfig: AppConfig): Promise<string> {
 function createDownloadPromise(appConfig: AppConfig): Promise<string> {
   const apk = getFilepath(appConfig)
 
-  return statAsync(apk)
-    .then((apkStat) => {
-      if (isApkSizeCorrect(apkStat, appConfig)) {
-        return apk
-      } else {
-        fs.unlinkSync(apk)
-        throw new Error(`Apk file "${apk}" is invalid, deleted invalid apk file.`)
-      }
-    })
-    .catch(() => {
-      return downloadApk(appConfig.buildUrl, apk)
-    })
+  return statAsync(apk).then((apkStat) => {
+    if (isApkSizeCorrect(apkStat, appConfig)) {
+      return apk
+    } else {
+      fs.unlinkSync(apk)
+      throw new Error(`Apk file "${apk}" is invalid, deleted invalid apk file.`)
+    }
+  }).catch(() => {
+    return downloadApk(appConfig.buildUrl, apk)
+  })
 }
 
 function getFilepath(appConfig: AppConfig): string {
