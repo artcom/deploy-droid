@@ -9,10 +9,15 @@ import {adb, deviceDescriptorFile} from "./../setup"
 
 import type {Device, AdbDeviceInfo} from "./types"
 
+export function isDeviceAvailable (deviceType: string): boolean {
+  return deviceType === "device" || deviceType === "emulator"
+}
+
 export function getDevices(): Promise<Array<Device>> {
   return createDevices()
     .then(exitOnNoDevices)
     .then(printDevices)
+    .then(selectAvailableDevices)
 }
 
 function createDevices(): Promise<Array<Device>> {
@@ -24,7 +29,7 @@ function createDevices(): Promise<Array<Device>> {
 }
 
 function createDevice({id, type}: AdbDeviceInfo): Promise<Device> {
-  if (deviceDescriptorFile && type !== "offline") {
+  if (deviceDescriptorFile && isDeviceAvailable(type)) {
     return deviceDescription(id)
       .then((deviceDescription) => {
         return {id, type, description: deviceDescription}
@@ -48,10 +53,6 @@ function adbShell(deviceId: string, command: string): Promise<string> {
     })
 }
 
-function trimAll(string: string): string {
-  return _.trim(string, " \t\r\n")
-}
-
 function exitOnNoDevices(devices: Array<Device>): Array<Device> {
   if (_.isEmpty(devices)) {
     console.log(colors.red("No devices found, Deploy Droid stops."))
@@ -59,4 +60,12 @@ function exitOnNoDevices(devices: Array<Device>): Array<Device> {
   }
 
   return devices
+}
+
+function selectAvailableDevices(devices: Array<Device>): Array<Device> {
+  return _.select(devices, (device) => isDeviceAvailable(device.type))
+}
+
+function trimAll(string: string): string {
+  return _.trim(string, " \t\r\n")
 }

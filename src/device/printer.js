@@ -3,6 +3,8 @@
 import colors from "colors/safe"
 import table from "text-table"
 
+import {isDeviceAvailable} from "./index"
+
 import type {Device} from "./types"
 
 export function simpleDeviceDescription(device: Device): string {
@@ -11,8 +13,8 @@ export function simpleDeviceDescription(device: Device): string {
 
 export function printDevices(devices: Array<Device>): Array<Device> {
   let header = colors.underline("Devices found:")
-  if (devicesOffline(devices)) {
-    header += (colors.underline.red(" ( Warning! Some devices offline )"))
+  if (devicesNotAvailable(devices)) {
+    header += (colors.underline.red(" ( Warning! Some devices not available )"))
   }
 
   const printableRows = devices.map((device) => {
@@ -32,10 +34,10 @@ function createPrintableRow(device: Device): Array<string> {
 }
 
 function deviceId(device: Device): string {
-  if (device.type === "offline") {
-    return colors.red(device.id)
-  } else {
+  if (isDeviceAvailable(device.type)) {
     return colors.green(device.id)
+  } else {
+    return colors.red(device.id)
   }
 }
 
@@ -44,13 +46,16 @@ function deviceDescription(device: Device): string {
 }
 
 function deviceType(device: Device): string {
-  if (device.type === "offline") {
-    return colors.red("OFFLINE")
-  } else {
-    return ""
+  switch (device.type) {
+    case "offline":
+      return colors.red("OFFLINE - ignoring")
+    case "unauthorized":
+      return colors.red("UNAUTHORIZED - ignoring")
+    default:
+      return ""
   }
 }
 
-function devicesOffline(devices: Array<Device>): boolean {
-  return devices.some((device) => device.type === "offline")
+function devicesNotAvailable(devices: Array<Device>): boolean {
+  return devices.some((device) => !isDeviceAvailable(device.type))
 }
