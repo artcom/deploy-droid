@@ -3,7 +3,7 @@
 
 import util from "util"
 
-import * as hockeyApp from "./hockeyApp/hockeyApp"
+import * as hockeyApp from "./hockeyApp"
 import {createAllAppsForDevices, filterDeployableApps} from "./apps/appCreator"
 import {showDescription} from "./printer"
 import {describeApps} from "./apps/appPrinter"
