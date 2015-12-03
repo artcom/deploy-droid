@@ -53,23 +53,31 @@ function apkTitle(app: App): string {
 }
 
 function deployedVersion(app: App): string {
+  let deployedVersion = ""
+
   switch (app.apkInstallState) {
     case apkInstallState.NOT_INSTALLED:
-      return colors.red("not deployed")
+      deployedVersion = colors.red("not deployed")
+      break
 
     case apkInstallState.NEEDS_UPDATE:
       const versionName = _.get(app.installedVersion, ["versionName"])
-      return versionName ? colors.red(versionName) : "error"
+      deployedVersion = versionName ? colors.red(versionName) : "error"
+      break
 
     case apkInstallState.INSTALLING:
-      return colors.grey(`installing: ${app.appConfig.shortVersion}`)
+      deployedVersion = colors.grey("installing")
+      break
 
     case apkInstallState.INSTALLED:
-      return colors.green(app.appConfig.shortVersion)
+      deployedVersion = colors.green(app.appConfig.shortVersion)
+      break
 
     default:
-      return ""
+      break
   }
+
+  return _.padRight(deployedVersion, 22)
 }
 
 function newVersion(app: App): string {
