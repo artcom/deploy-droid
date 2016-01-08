@@ -9,7 +9,7 @@ import {adb, deviceDescriptorFile} from "./../setup"
 
 import type {Device, AdbDeviceInfo} from "./types"
 
-export function isDeviceAvailable (deviceType: string): boolean {
+export function isDeviceAvailable(deviceType: string): boolean {
   return deviceType === "device" || deviceType === "emulator"
 }
 
