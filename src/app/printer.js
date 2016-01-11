@@ -86,12 +86,8 @@ function newVersion(app: App): string {
 
 function apkDownload(app: App): string {
   switch (app.apkDownloadState) {
-    case apkDownloadState.INITIAL:
-      return ""
     case apkDownloadState.DOWNLOADING:
       return colors.grey(`downloading ${getApkDownloadStateProgress(app)}`)
-    case apkDownloadState.DOWNLOADED:
-      return colors.green("downloaded")
     default:
       return ""
   }
