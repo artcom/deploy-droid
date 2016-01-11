@@ -16,7 +16,7 @@ export const apkDownloadState = {
 
 export const apkInstallState = {
   NOT_INSTALLED: "notInstalled",
-  NEEDS_UPDATE: "needsUpdate",
+  NEEDS_NEW_INSTALLATION: "needsNewInstallation",
   INSTALLING: "installing",
   INSTALLED: "installed"
 }
@@ -45,9 +45,9 @@ constructor(
 }
 
   determineApkInstallState(): string {
-    if (this.installedVersion) {
-      if (this.needsUpdate()) {
-        return apkInstallState.NEEDS_UPDATE
+    if (this.isAppInstalled()) {
+      if (this.needsNewInstallation()) {
+        return apkInstallState.NEEDS_NEW_INSTALLATION
       }
 
       return apkInstallState.INSTALLED
@@ -56,9 +56,13 @@ constructor(
     }
   }
 
-  needsUpdate(): boolean {
+  isAppInstalled(): boolean {
+    return !_.isEmpty(this.installedVersion)
+  }
+
+  needsNewInstallation(): boolean {
     const versionCode = _.get(this.installedVersion, "versionCode", "-1")
-    return parseInt(this.appConfig.version) > parseInt(versionCode)
+    return parseInt(this.appConfig.version) !== parseInt(versionCode)
   }
 
   deploy() {

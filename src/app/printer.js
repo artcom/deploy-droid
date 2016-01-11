@@ -60,7 +60,7 @@ function deployedVersion(app: App): string {
       deployedVersion = colors.red("not deployed")
       break
 
-    case apkInstallState.NEEDS_UPDATE:
+    case apkInstallState.NEEDS_NEW_INSTALLATION:
       const versionName = _.get(app.installedVersion, ["versionName"])
       deployedVersion = versionName ? colors.red(versionName) : "error"
       break
