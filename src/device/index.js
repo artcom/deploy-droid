@@ -28,14 +28,14 @@ function createDevices(): Promise<Array<Device>> {
     })
 }
 
-function createDevice({id, type}: AdbDeviceInfo): Promise<Device> {
+function createDevice({ id, type }: AdbDeviceInfo): Promise<Device> {
   if (deviceDescriptorFile && isDeviceAvailable(type)) {
     return deviceDescription(id)
       .then((deviceDescription) => {
-        return {id, type, description: deviceDescription}
+        return { id, type, description: deviceDescription }
       })
   } else {
-    return Promise.resolve({id, type})
+    return Promise.resolve({ id, type })
   }
 }
 

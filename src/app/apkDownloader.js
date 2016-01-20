@@ -47,7 +47,7 @@ function isApkSizeCorrect(apkStat: any, appConfig: AppConfig): boolean {
 }
 
 function downloadApk(url:string, dest:string): Promise<string> {
-  return wgetAsync({url, dest})
+  return wgetAsync({ url, dest })
    .then((response) => {
      return response.filepath
    })

@@ -92,7 +92,7 @@ function retrieveVersion(appInfo: HockeyAppInfo): Promise<HockeyAppVersionInfo> 
 }
 
 function getLatestAvailableVersion(appVersions: Array<HockeyAppVersionInfo>): HockeyAppVersionInfo {
-  const deployableVersions = _.select(appVersions, {status: APP_AVAILABLE})
+  const deployableVersions = _.select(appVersions, { status: APP_AVAILABLE })
   return deployableVersions[0]
 }
 
