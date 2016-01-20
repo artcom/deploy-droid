@@ -65,14 +65,14 @@ constructor(
     return parseInt(this.appConfig.version) !== parseInt(versionCode)
   }
 
-  deploy() {
+  deploy(): Promise {
     return this.startApkDownload()
       .then((filepath) => {
         return this.installApk(filepath)
       })
   }
 
-  startApkDownload() {
+  startApkDownload(): Promise<string> {
     this.apkDownloadState = apkDownloadState.DOWNLOADING
     return getApk(this.appConfig)
       .then((filepath) => {
@@ -81,7 +81,7 @@ constructor(
       })
   }
 
-  installApk(filepath: string) {
+  installApk(filepath: string): Promise {
     this.apkInstallState = apkInstallState.INSTALLING
     return adb.uninstall(this.device.id, this.appConfig.bundleIdentifier)
       .then(() => adb.install(this.device.id, filepath))
