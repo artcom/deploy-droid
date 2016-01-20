@@ -4,10 +4,15 @@
     "node": true,
     "es6": true
   },
+  "parser": "babel-eslint",
+  "plugins": [
+    "flow-vars"
+  ],
   "rules": {
     "no-console": 0,
     "quotes": [2, "double"],
-    "semi": [2, "never"]
+    "semi": [2, "never"],
+    "flow-vars/define-flow-type": 2,
+    "flow-vars/use-flow-type": 2
   },
-  "parser": "babel-eslint"
 }
