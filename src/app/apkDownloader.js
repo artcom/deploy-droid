@@ -57,8 +57,10 @@ function createCacheDir(dirName: string): string {
   const cacheDir = path.resolve(dirName)
   try {
     fs.mkdirSync(cacheDir)
-  } catch (ex) {
-    //ignore: dir already exists
+  } catch (error) {
+    if (error.code !== "EEXIST") {
+      throw new Error(error)
+    }
   }
 
   return cacheDir
