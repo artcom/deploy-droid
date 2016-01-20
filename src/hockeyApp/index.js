@@ -1,5 +1,5 @@
+// @flow
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-/* @flow */
 
 import _ from "lodash"
 import axios from "axios"
