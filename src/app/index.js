@@ -18,7 +18,8 @@ export const apkInstallState = {
   NOT_INSTALLED: "notInstalled",
   NEEDS_NEW_INSTALLATION: "needsNewInstallation",
   INSTALLING: "installing",
-  INSTALLED: "installed"
+  INSTALLED: "installed",
+  ERROR: "error"
 }
 
 export default class App {
@@ -87,6 +88,9 @@ constructor(
       .then(() => adb.install(this.device.id, filepath))
       .then(() => {
         this.apkInstallState = apkInstallState.INSTALLED
+      })
+      .catch((error) => {
+        this.apkInstallState = apkInstallState.ERROR
       })
   }
 }

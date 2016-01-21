@@ -72,7 +72,8 @@ function deployedVersion(app: App): string {
     case apkInstallState.INSTALLED:
       deployedVersion = colors.green(app.appConfig.shortVersion)
       break
-
+    case apkInstallState.ERROR:
+        deployedVersion = colors.red(`error`)
     default:
       break
   }
